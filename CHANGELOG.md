@@ -5,6 +5,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.3] - 2019-12-23
+
+- Fix unnecessary `)` at the end of each project detail
+
+## [0.0.2] - 2019-12-23
+
 - Update readme
 
 ## [0.0.1] - 2019-12-23

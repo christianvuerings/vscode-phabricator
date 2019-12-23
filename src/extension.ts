@@ -123,7 +123,7 @@ const provider = ({
               `/${isGroup ? "tag" : "p"}/${item.key}/`,
               baseUrl
             )})**`.concat(
-              item.detail ? `\n\n${item.detail.replace(/\s\s#/g, " - ")})` : ""
+              item.detail ? `\n\n${item.detail.replace(/\s\s#/g, " - ")}` : ""
             )
           );
           markdown.isTrusted = true;
