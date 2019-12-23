@@ -5,4 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- Update readme
+
+## [0.0.1] - 2019-12-23
+
 - Initial release

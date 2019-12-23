@@ -4,7 +4,7 @@ Autocompletion support for users and projects in Arcanist diff templates.
 
 ## Installation
 
--
+- Search for "Phabricator" in the VS Code extensions panel or [download on the marketplace](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator).
 
 ## Configuration
 

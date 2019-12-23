@@ -1,7 +1,7 @@
 {
   "name": "vscode-phabricator",
-  "displayName": "VSCode phabricator",
-  "description": "Phabricator utilities",
+  "displayName": "Phabricator",
+  "description": "Phabricator support in VSCode",
   "publisher": "christianvuerings",
   "version": "0.0.1",
   "engines": {
