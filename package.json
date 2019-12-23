@@ -1,0 +1,63 @@
+{
+  "name": "vscode-phabricator",
+  "displayName": "VSCode phabricator",
+  "description": "Phabricator utilities",
+  "publisher": "christianvuerings",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.41.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "repository": {
+    "url": "https://github.com/christianvuerings/vscode-phabricator"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": [
+      {
+        "title": "Phabricator",
+        "properties": {
+          "phabricator.apiToken": {
+            "type": "string",
+            "description": "Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/",
+            "scope": "window"
+          },
+          "phabricator.baseUrl": {
+            "type": "string",
+            "description": "Base URL for the phabricator repo: https://phabricator.example.com/",
+            "scope": "window"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.11.7",
+    "@types/node-fetch": "^2.5.4",
+    "@types/vscode": "^1.41.0",
+    "glob": "^7.1.5",
+    "mocha": "^6.2.2",
+    "typescript": "^3.6.4",
+    "tslint": "^5.20.0",
+    "vscode-test": "^1.2.2"
+  },
+  "dependencies": {
+    "execa": "^4.0.0",
+    "fuse.js": "^3.4.6",
+    "node-fetch": "^2.6.0"
+  }
+}
