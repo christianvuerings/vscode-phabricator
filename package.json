@@ -34,6 +34,12 @@
           }
         }
       }
+    ],
+    "commands": [
+      {
+        "command": "phabricator-vscode.updateCache",
+        "title": "Phabricator: Update cache"
+      }
     ]
   },
   "scripts": {

@@ -59,7 +59,8 @@ const request = async ({
   const response = await fetch(url, {
     headers: {
       "User-Agent": "vscode-phabricator"
-    }
+    },
+    timeout: 2000
   });
   return await response.json();
 };
@@ -208,6 +209,37 @@ const initializeStore = async ({
   });
 };
 
+async function updateCache({
+  apiToken,
+  baseUrl,
+  context
+}: {
+  apiToken: string;
+  baseUrl: string;
+  context: vscode.ExtensionContext;
+}) {
+  const statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Right,
+    100
+  );
+  statusBarItem.show();
+  statusBarItem.text = "[Phabricator] Fetching data...";
+  try {
+    await initializeStore({ apiToken, baseUrl, context });
+    statusBarItem.text = "[Phabricator] Update succeeded";
+  } catch (e) {
+    console.error(e);
+    vscode.window.showErrorMessage(
+      "[Phabricator] Could not update the cache. Ensure you can connect to your phabricator instance."
+    );
+    statusBarItem.text = "[Phabricator] Update failed";
+  }
+
+  setTimeout(() => {
+    statusBarItem.hide();
+  }, 10000);
+}
+
 export async function activate(context: vscode.ExtensionContext) {
   console.log('Extension "vscode-phabricator" is active');
 
@@ -222,15 +254,15 @@ export async function activate(context: vscode.ExtensionContext) {
   const { lastUpdated } = context.globalState.get(baseUrl) || {};
   const FULL_DAY = 24 * 60 * 60 * 1000;
   if (!lastUpdated || Date.now() - lastUpdated > FULL_DAY) {
-    const statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Right,
-      100
-    );
-    statusBarItem.show();
-    statusBarItem.text = "[Phabricator] Fetching data...";
-    await initializeStore({ apiToken, baseUrl, context });
-    statusBarItem.hide();
+    await updateCache({ apiToken, baseUrl, context });
   }
+
+  vscode.commands.registerCommand(
+    "phabricator-vscode.updateCache",
+    async () => {
+      await updateCache({ apiToken, baseUrl, context });
+    }
+  );
 
   context.subscriptions.push(provider({ baseUrl, context }));
 }

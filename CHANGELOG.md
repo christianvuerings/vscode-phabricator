@@ -5,9 +5,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.7] - 2019-12-24
+
 - Add badges to `README.md`
 - Add license information in `package.json`
 - Update TypeScript to `3.7.4`
+- Add command to update the phabricator cache
+- Provide better error messages when the update fails
 
 ## [0.0.6] - 2019-12-24
 
