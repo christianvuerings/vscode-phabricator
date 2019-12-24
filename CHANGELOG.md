@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.6] - 2019-12-24
+
+- Convert tslint to eslint
+
 ## [0.0.5] - 2019-12-24
 
 - Update VSCode marketplace theme
