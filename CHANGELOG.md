@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- Add screencast to `README.md`
+
 ## [0.0.8] - 2019-12-24
 
 - Change timeout for status messages to 5 seconds
