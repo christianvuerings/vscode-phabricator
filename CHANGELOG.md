@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.5] - 2019-12-24
+
+- Update VSCode marketplace theme
+
 ## [0.0.4] - 2019-12-24
 
 - Add icon

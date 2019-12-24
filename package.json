@@ -44,6 +44,10 @@
     "test": "node ./out/test/runTest.js"
   },
   "icon": "images/phabricator.png",
+  "galleryBanner": {
+    "color": "#d6336c",
+    "theme": "dark"
+  },
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.7",
