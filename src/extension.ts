@@ -237,7 +237,7 @@ async function updateCache({
 
   setTimeout(() => {
     statusBarItem.hide();
-  }, 10000);
+  }, 5000);
 }
 
 export async function activate(context: vscode.ExtensionContext) {

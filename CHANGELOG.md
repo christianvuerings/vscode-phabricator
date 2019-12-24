@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.8] - 2019-12-24
+
+- Change timeout for status messages to 5 seconds
+
 ## [0.0.7] - 2019-12-24
 
 - Add badges to `README.md`
