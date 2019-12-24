@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.4] - 2019-12-24
+
+- Add icon
+
 ## [0.0.3] - 2019-12-23
 
 - Fix unnecessary `)` at the end of each project detail

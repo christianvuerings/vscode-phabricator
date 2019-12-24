@@ -43,6 +43,7 @@
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js"
   },
+  "icon": "images/phabricator.png",
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.7",
