@@ -1,5 +1,7 @@
 # Phabribator Extension for VSCode
 
+[![Version](https://vsmarketplacebadge.apphb.com/version/christianvuerings.vscode-phabricator.svg)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/christianvuerings.vscode-phabricator.svg)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
+
 Autocompletion support for users and projects in Arcanist diff templates.
 
 ## Installation

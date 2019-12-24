@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- Add badges to `README.md`
+
 ## [0.0.6] - 2019-12-24
 
 - Convert tslint to eslint
