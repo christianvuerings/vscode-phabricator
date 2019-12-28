@@ -17,6 +17,18 @@ Autocompletion support for users and projects in Arcanist diff templates.
 - `phabricator.apiToken`: Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/
 - `phabricator.baseUrl`: Base URL for the phabricator repo: https://phabricator.example.com/
 
+## Publish
+
+Publish a new version:
+
+1. Update `CHANGELOG.md` and add a new version
+2. Publish with `vsce`
+
+```
+npm i -g vsce
+vsce publish patch
+```
+
 ## Acknowledgements
 
 - Heavily inspired by [@jparise](https://github.com/jparise)'s [vscode-vim](https://github.com/jparise/vim-phabricator) plugin.

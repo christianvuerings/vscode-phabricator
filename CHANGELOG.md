@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- Update publish information
+
 ## [0.0.10] - 2019-12-28
 
 - Better error handling: use dedicated output channel
