@@ -5,6 +5,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.10] - 2019-12-28
+
+- Better error handling: use dedicated output channel
+- Extract "request"
+
 ## [0.0.9] - 2019-12-24
 
 - Add screencast to `README.md`

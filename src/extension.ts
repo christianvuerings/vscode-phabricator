@@ -1,8 +1,10 @@
 import * as vscode from "vscode";
-import fetch from "node-fetch";
 import Fuse from "fuse.js";
 import { URL } from "url";
 import configuration from "./configuration";
+import request, { Response } from "./request";
+
+const output = vscode.window.createOutputChannel("Phabricator");
 
 type StoreItem = {
   detail?: string;
@@ -17,53 +19,6 @@ type Store =
       projects: StoreItem;
     }
   | undefined;
-
-type Response = {
-  result?: {
-    cursor: {
-      after: string;
-    };
-    data?: {
-      fields: {
-        username: string;
-        realName: string;
-        slug: string;
-        name: string;
-        description: string;
-      };
-    }[];
-  };
-};
-
-const request = async ({
-  after,
-  apiToken,
-  baseUrl,
-  method,
-  order
-}: {
-  after?: string | null;
-  apiToken: string;
-  baseUrl: string;
-  method: string;
-  order: string;
-}): Promise<Response> => {
-  const url = new URL(`/api/${method}`, baseUrl);
-  url.searchParams.set("api.token", apiToken);
-  url.searchParams.set("queryKey", "active");
-  url.searchParams.set("order[0]", order);
-  if (after) {
-    url.searchParams.set("after", after);
-  }
-
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent": "vscode-phabricator"
-    },
-    timeout: 2000
-  });
-  return await response.json();
-};
 
 const triggerCharacters: string[] = ["@", "#"];
 const provider = ({
@@ -169,7 +124,7 @@ const initializeStore = async ({
       if (response.result && response.result.data) {
         after = response.result.cursor.after;
 
-        console.log("phabricator", method, after);
+        output.appendLine(`${method} - ${after}`);
 
         response.result.data.forEach(item => {
           items.push(
@@ -229,9 +184,9 @@ async function updateCache({
     statusBarItem.text = "[Phabricator] Update succeeded";
   } catch (e) {
     console.error(e);
-    vscode.window.showErrorMessage(
-      "[Phabricator] Could not update the cache. Ensure you can connect to your phabricator instance."
-    );
+    const errorMessage = `[Phabricator] Could not update the cache. Ensure you can connect to ${baseUrl}`;
+    vscode.window.showErrorMessage(errorMessage);
+    output.appendLine(errorMessage);
     statusBarItem.text = "[Phabricator] Update failed";
   }
 
@@ -241,7 +196,7 @@ async function updateCache({
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.log('Extension "vscode-phabricator" is active');
+  output.appendLine('Extension "vscode-phabricator" is active');
 
   const { apiToken, baseUrl } = await configuration();
   if (!apiToken || !baseUrl) {
