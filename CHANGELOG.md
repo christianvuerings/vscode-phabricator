@@ -5,7 +5,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Update publish information
+## [0.0.11] - 2019-12-29
+
+- [docs] Update publish documentation
+- [feature] Add browse command
+- [bugfix] Fix requests not going through on a slow connection
 
 ## [0.0.10] - 2019-12-28
 

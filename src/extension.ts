@@ -200,9 +200,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const { apiToken, baseUrl } = await configuration();
   if (!apiToken || !baseUrl) {
-    console.error(
-      "`phabricator.baseUrl` and `phabricator.apiToken` are required settings for the Phabricator extension"
-    );
+    const errorMessage =
+      "`phabricator.baseUrl` and `phabricator.apiToken` are required settings for the Phabricator extension";
+    console.error(errorMessage);
+    output.appendLine(errorMessage);
     return;
   }
 
@@ -218,6 +219,9 @@ export async function activate(context: vscode.ExtensionContext) {
       await updateCache({ apiToken, baseUrl, context });
     }
   );
+  vscode.commands.registerCommand("phabricator-vscode.browseRepository", () => {
+    vscode.env.openExternal(vscode.Uri.parse(baseUrl));
+  });
 
   context.subscriptions.push(provider({ baseUrl, context }));
 }

@@ -37,6 +37,10 @@
     ],
     "commands": [
       {
+        "command": "phabricator-vscode.browseRepository",
+        "title": "Phabricator: Browse repository"
+      },
+      {
         "command": "phabricator-vscode.updateCache",
         "title": "Phabricator: Update cache"
       }

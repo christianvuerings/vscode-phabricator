@@ -42,8 +42,7 @@ export default async function request({
   const response = await fetch(url, {
     headers: {
       "User-Agent": "vscode-phabricator"
-    },
-    timeout: 2000
+    }
   });
   return await response.json();
 }
