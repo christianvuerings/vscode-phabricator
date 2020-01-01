@@ -93,6 +93,58 @@ const provider = ({
     ...triggerCharacters
   );
 
+const getItems = async ({
+  apiToken,
+  baseUrl,
+  method,
+  order
+}: {
+  apiToken: string;
+  baseUrl: string;
+  method: "user.search" | "project.search" | "user.whoami";
+  order?: string;
+}): Promise<StoreItem> => {
+  let after;
+  const items: StoreItem = [];
+
+  while (after !== null) {
+    const response: Response = await request({
+      after,
+      apiToken,
+      baseUrl,
+      method,
+      order,
+      setQueryKey: true
+    });
+
+    if (response.result && response.result.data) {
+      after =
+        response.result &&
+        response.result.cursor &&
+        response.result.cursor.after;
+
+      output.appendLine(`${method} - ${after}`);
+
+      response.result.data.forEach(item => {
+        items.push(
+          item.fields.username
+            ? {
+                key: item.fields.username,
+                value: item.fields.realName
+              }
+            : {
+                key: item.fields.slug,
+                value: item.fields.name,
+                detail: item.fields.description || ""
+              }
+        );
+      });
+    }
+  }
+
+  return items;
+};
+
 const initializeStore = async ({
   apiToken,
   baseUrl,
@@ -102,56 +154,16 @@ const initializeStore = async ({
   baseUrl: string;
   context: vscode.ExtensionContext;
 }) => {
-  const getItems = async ({
-    method,
-    order
-  }: {
-    method: "user.search" | "project.search";
-    order: string;
-  }): Promise<StoreItem> => {
-    let after;
-    const items: StoreItem = [];
-
-    while (after !== null) {
-      const response: Response = await request({
-        after,
-        apiToken,
-        baseUrl,
-        method,
-        order
-      });
-
-      if (response.result && response.result.data) {
-        after = response.result.cursor.after;
-
-        output.appendLine(`${method} - ${after}`);
-
-        response.result.data.forEach(item => {
-          items.push(
-            item.fields.username
-              ? {
-                  key: item.fields.username,
-                  value: item.fields.realName
-                }
-              : {
-                  key: item.fields.slug,
-                  value: item.fields.name,
-                  detail: item.fields.description || ""
-                }
-          );
-        });
-      }
-    }
-
-    return items;
-  };
-
   const [users, projects] = await Promise.all([
     getItems({
+      apiToken,
+      baseUrl,
       method: "user.search",
       order: "username"
     }),
     getItems({
+      apiToken,
+      baseUrl,
       method: "project.search",
       order: "name"
     })
@@ -163,6 +175,50 @@ const initializeStore = async ({
     projects
   });
 };
+
+async function fetchReadyToLand({
+  apiToken,
+  baseUrl
+}: {
+  apiToken: string;
+  baseUrl: string;
+}) {
+  // const statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
+  //   vscode.StatusBarAlignment.Right,
+  //   100
+  // );
+  // statusBarItem.show();
+  // statusBarItem.text = "[Phabricator] Fetching data...";
+  try {
+    const response = await request({
+      apiToken,
+      baseUrl,
+      method: "user.whoami",
+      fields: {
+        // Pinterest specfic
+        client: "arc",
+        clientVersion: 1000
+      }
+    });
+
+    const {
+      result: { phid }
+    } = response;
+
+    console.log(phid);
+    // statusBarItem.text = "[Phabricator] Update succeeded";
+  } catch (e) {
+    console.error(e);
+    // const errorMessage = `[Phabricator] Could not update the cache. Ensure you can connect to ${baseUrl}`;
+    // vscode.window.showErrorMessage(errorMessage);
+    // output.appendLine(errorMessage);
+    // statusBarItem.text = "[Phabricator] Update failed";
+  }
+
+  // setTimeout(() => {
+  //   statusBarItem.hide();
+  // }, 5000);
+}
 
 async function updateCache({
   apiToken,
@@ -222,6 +278,12 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("phabricator-vscode.browseRepository", () => {
     vscode.env.openExternal(vscode.Uri.parse(baseUrl));
   });
+  vscode.commands.registerCommand(
+    "phabricator-vscode.fetchReadyToLand",
+    async () => {
+      await fetchReadyToLand({ apiToken, baseUrl });
+    }
+  );
 
   context.subscriptions.push(provider({ baseUrl, context }));
 }

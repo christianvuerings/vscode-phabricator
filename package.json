@@ -43,6 +43,10 @@
       {
         "command": "phabricator-vscode.updateCache",
         "title": "Phabricator: Update cache"
+      },
+      {
+        "command": "phabricator-vscode.fetchReadyToLand",
+        "title": "Phabricator: Fetch ready to land"
       }
     ]
   },

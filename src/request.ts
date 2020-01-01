@@ -3,8 +3,8 @@ import { URL } from "url";
 
 export type Response = {
   result?: {
-    cursor: {
-      after: string;
+    cursor?: {
+      after?: string;
     };
     data?: {
       fields: {
@@ -15,6 +15,7 @@ export type Response = {
         description: string;
       };
     }[];
+    phid?: string;
   };
 };
 
@@ -22,21 +23,37 @@ export default async function request({
   after,
   apiToken,
   baseUrl,
+  fields,
   method,
-  order
+  order,
+  setQueryKey = false
 }: {
   after?: string | null;
   apiToken: string;
   baseUrl: string;
+  fields?: {
+    client: string;
+    clientVersion: number;
+  };
   method: string;
-  order: string;
+  order?: string;
+  setQueryKey?: boolean;
 }): Promise<Response> {
   const url = new URL(`/api/${method}`, baseUrl);
   url.searchParams.set("api.token", apiToken);
-  url.searchParams.set("queryKey", "active");
-  url.searchParams.set("order[0]", order);
+  if (setQueryKey) {
+    url.searchParams.set("queryKey", "active");
+  }
+  if (order) {
+    url.searchParams.set("order[0]", order);
+  }
   if (after) {
     url.searchParams.set("after", after);
+  }
+  if (fields) {
+    for (const [key, value] of Object.entries(fields)) {
+      url.searchParams.set(key, String(value));
+    }
   }
 
   const response = await fetch(url, {
