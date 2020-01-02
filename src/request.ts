@@ -13,6 +13,7 @@ export type Response = {
         slug: string;
         name: string;
         description: string;
+        title: string;
       };
     }[];
     phid?: string;
@@ -32,8 +33,7 @@ export default async function request({
   apiToken: string;
   baseUrl: string;
   fields?: {
-    client: string;
-    clientVersion: number;
+    [key: string]: number | string;
   };
   method: string;
   order?: string;

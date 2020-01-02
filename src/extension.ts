@@ -96,12 +96,16 @@ const provider = ({
 const getItems = async ({
   apiToken,
   baseUrl,
+  fields,
   method,
   order
 }: {
   apiToken: string;
   baseUrl: string;
-  method: "user.search" | "project.search" | "user.whoami";
+  fields?: {
+    [key: string]: number | string;
+  };
+  method: "differential.revision.search" | "project.search" | "user.search";
   order?: string;
 }): Promise<StoreItem> => {
   let after;
@@ -112,6 +116,7 @@ const getItems = async ({
       after,
       apiToken,
       baseUrl,
+      fields,
       method,
       order,
       setQueryKey: true
@@ -190,7 +195,7 @@ async function fetchReadyToLand({
   // statusBarItem.show();
   // statusBarItem.text = "[Phabricator] Fetching data...";
   try {
-    const response = await request({
+    const whoamiResponse = await request({
       apiToken,
       baseUrl,
       method: "user.whoami",
@@ -201,11 +206,19 @@ async function fetchReadyToLand({
       }
     });
 
-    const {
-      result: { phid }
-    } = response;
+    const acceptedRevisionsResponse = await request({
+      apiToken,
+      baseUrl,
+      method: "differential.revision.search",
+      fields: {
+        "constraints[authorPHIDs][0]": whoamiResponse.result?.phid || "",
+        "constraints[statuses][0]": "accepted"
+      }
+    });
 
-    console.log(phid);
+    console.log(
+      (acceptedRevisionsResponse?.result?.data || []).map(el => el.fields.title)
+    );
     // statusBarItem.text = "[Phabricator] Update succeeded";
   } catch (e) {
     console.error(e);
