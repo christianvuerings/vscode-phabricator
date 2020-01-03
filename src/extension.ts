@@ -216,9 +216,18 @@ async function fetchReadyToLand({
       }
     });
 
-    console.log(
-      (acceptedRevisionsResponse?.result?.data || []).map(el => el.fields.title)
+    const items = (acceptedRevisionsResponse?.result?.data || []).map(
+      el => el.fields.title
     );
+
+    const selectedItem = await vscode.window.showQuickPick(items, {
+      placeHolder: "Select a diff",
+      onDidSelectItem: item =>
+        vscode.window.showInformationMessage(`Focus: ${item}`)
+    });
+
+    console.log(selectedItem);
+
     // statusBarItem.text = "[Phabricator] Update succeeded";
   } catch (e) {
     console.error(e);
