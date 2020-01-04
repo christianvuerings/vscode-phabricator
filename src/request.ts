@@ -8,6 +8,7 @@ export type Response = {
     };
     data?: {
       fields: {
+        diffPHID: string;
         username: string;
         realName: string;
         slug: string;

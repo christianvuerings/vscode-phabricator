@@ -20,6 +20,26 @@ type Store =
     }
   | undefined;
 
+class DiffItem implements vscode.QuickPickItem {
+  detail: string;
+  label: string;
+  uri: string;
+
+  constructor({
+    detail,
+    label,
+    uri
+  }: {
+    detail: string;
+    label: string;
+    uri: string;
+  }) {
+    this.detail = detail;
+    this.label = label;
+    this.uri = uri;
+  }
+}
+
 const triggerCharacters: string[] = ["@", "#"];
 const provider = ({
   baseUrl,
@@ -216,8 +236,23 @@ async function fetchReadyToLand({
       }
     });
 
-    const items = (acceptedRevisionsResponse?.result?.data || []).map(
-      el => el.fields.title
+    const items: DiffItem[] = await Promise.all(
+      (acceptedRevisionsResponse?.result?.data || []).map(async el => {
+        return new DiffItem({
+          detail: el.fields.summary,
+          label: el.fields.title,
+          uri: (
+            await request({
+              apiToken,
+              baseUrl,
+              method: "phid.query",
+              fields: {
+                "phids[0]": el.fields.diffPHID
+              }
+            })
+          ).result[el.fields.diffPHID].uri
+        });
+      })
     );
 
     const selectedItem = await vscode.window.showQuickPick(items, {
