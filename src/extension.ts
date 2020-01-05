@@ -238,27 +238,25 @@ async function fetchReadyToLand({
 
     const acceptedRevisions = acceptedRevisionsResponse?.result?.data || [];
 
-    const now = Date.now();
+    if (!acceptedRevisions.length) {
+      vscode.window.showInformationMessage(
+        "[Phabricator] Did not find accepted revisions"
+      );
+      return;
+    }
 
-    const diffsInfoResponse = acceptedRevisions.length
-      ? await request({
-          apiToken,
-          baseUrl,
-          method: "phid.query",
-          fields: acceptedRevisions.reduce((accumulator, currentValue) => {
-            accumulator[`phids[${Object.entries(accumulator).length}]`] =
-              currentValue.fields.diffPHID;
-            return accumulator;
-          }, {})
-        })
-      : {};
+    const diffsInfoResponse = await request({
+      apiToken,
+      baseUrl,
+      method: "phid.query",
+      fields: acceptedRevisions.reduce((accumulator, currentValue) => {
+        accumulator[`phids[${Object.entries(accumulator).length}]`] =
+          currentValue.fields.diffPHID;
+        return accumulator;
+      }, {})
+    });
 
-    const totalTime = now - Date.now();
-    console.log("Total time", totalTime);
-
-    const items: DiffItem[] = (
-      acceptedRevisionsResponse?.result?.data || []
-    ).map(el => {
+    const items: DiffItem[] = acceptedRevisions.map(el => {
       return new DiffItem({
         // description: el.fields.summary,
         description: "",
