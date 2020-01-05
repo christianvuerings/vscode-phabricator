@@ -236,43 +236,38 @@ async function fetchReadyToLand({
       }
     });
 
-    // const acceptedRevisions = acceptedRevisionsResponse?.result?.data || [];
+    const acceptedRevisions = acceptedRevisionsResponse?.result?.data || [];
 
-    // console.log(JSON.stringify(acceptedRevisions));
+    const now = Date.now();
 
-    // const output = acceptedRevisions.reduce((accumulator, currentValue) => {
-    //   accumulator[`phids${Object.entries(accumulator).length}`] =
-    //     currentValue.fields.diffPHID;
-    //   return accumulator;
-    // }, {});
+    const diffsInfoResponse = acceptedRevisions.length
+      ? await request({
+          apiToken,
+          baseUrl,
+          method: "phid.query",
+          fields: acceptedRevisions.reduce((accumulator, currentValue) => {
+            accumulator[`phids[${Object.entries(accumulator).length}]`] =
+              currentValue.fields.diffPHID;
+            return accumulator;
+          }, {})
+        })
+      : {};
 
-    // const diffsInfoResponse = await request({
-    // 	apiToken,
-    // 	baseUrl,
-    // 	method: "phid.query",
-    // 	fields: {
-    // 		"phids[0]": el.fields.diffPHID
-    // 	}
-    // })
+    const totalTime = now - Date.now();
+    console.log("Total time", totalTime);
 
-    const items: DiffItem[] = await Promise.all(
-      (acceptedRevisionsResponse?.result?.data || []).map(async el => {
-        return new DiffItem({
-          description: el.fields.summary,
-          label: el.fields.title,
-          uri: (
-            await request({
-              apiToken,
-              baseUrl,
-              method: "phid.query",
-              fields: {
-                "phids[0]": el.fields.diffPHID
-              }
-            })
-          ).result[el.fields.diffPHID].uri
-        });
-      })
-    );
+    const items: DiffItem[] = (
+      acceptedRevisionsResponse?.result?.data || []
+    ).map(el => {
+      return new DiffItem({
+        // description: el.fields.summary,
+        description: "",
+        label: el.fields.title,
+        uri: diffsInfoResponse.result
+          ? diffsInfoResponse.result[el.fields.diffPHID].uri
+          : ""
+      });
+    });
 
     const selectedItem = await vscode.window.showQuickPick(items, {
       placeHolder: "Select a diff"
