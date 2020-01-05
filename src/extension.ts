@@ -208,22 +208,18 @@ async function fetchReadyToLand({
   apiToken: string;
   baseUrl: string;
 }) {
-  // const statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
-  //   vscode.StatusBarAlignment.Right,
-  //   100
-  // );
-  // statusBarItem.show();
-  // statusBarItem.text = "[Phabricator] Fetching data...";
   try {
     const whoamiResponse = await request({
       apiToken,
       baseUrl,
       method: "user.whoami",
-      fields: {
-        // Pinterest specfic
-        client: "arc",
-        clientVersion: 1000
-      }
+      // [Pinterest specfic]: Pinterest requires the client and clientVersion to be set
+      fields: baseUrl.includes("phabricator.pinadmin.com")
+        ? {
+            client: "arc",
+            clientVersion: 1000
+          }
+        : {}
     });
 
     const acceptedRevisionsResponse = await request({
@@ -249,23 +245,27 @@ async function fetchReadyToLand({
       apiToken,
       baseUrl,
       method: "phid.query",
-      fields: acceptedRevisions.reduce((accumulator, currentValue) => {
-        accumulator[`phids[${Object.entries(accumulator).length}]`] =
-          currentValue.fields.diffPHID;
-        return accumulator;
-      }, {})
+      fields: acceptedRevisions.reduce(
+        (accumulator, currentValue) => ({
+          ...accumulator,
+          [`phids[${Object.entries(accumulator).length}]`]: currentValue.fields
+            .diffPHID
+        }),
+        {}
+      )
     });
 
-    const items: DiffItem[] = acceptedRevisions.map(el => {
-      return new DiffItem({
-        // description: el.fields.summary,
-        description: "",
-        label: el.fields.title,
-        uri: diffsInfoResponse.result
-          ? diffsInfoResponse.result[el.fields.diffPHID].uri
-          : ""
-      });
-    });
+    const items: DiffItem[] = acceptedRevisions.map(
+      el =>
+        new DiffItem({
+          // description: el.fields.summary,
+          description: "",
+          label: el.fields.title,
+          uri: diffsInfoResponse.result
+            ? diffsInfoResponse.result[el.fields.diffPHID].uri
+            : ""
+        })
+    );
 
     const selectedItem = await vscode.window.showQuickPick(items, {
       placeHolder: "Select a diff"
@@ -274,8 +274,6 @@ async function fetchReadyToLand({
     if (selectedItem && selectedItem.uri) {
       vscode.env.openExternal(vscode.Uri.parse(selectedItem.uri));
     }
-
-    // statusBarItem.text = "[Phabricator] Update succeeded";
   } catch (e) {
     console.error(e);
     // const errorMessage = `[Phabricator] Could not update the cache. Ensure you can connect to ${baseUrl}`;
