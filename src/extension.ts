@@ -21,20 +21,20 @@ type Store =
   | undefined;
 
 class DiffItem implements vscode.QuickPickItem {
-  detail: string;
+  description: string;
   label: string;
   uri: string;
 
   constructor({
-    detail,
+    description,
     label,
     uri
   }: {
-    detail: string;
+    description: string;
     label: string;
     uri: string;
   }) {
-    this.detail = detail;
+    this.description = description;
     this.label = label;
     this.uri = uri;
   }
@@ -236,10 +236,29 @@ async function fetchReadyToLand({
       }
     });
 
+    // const acceptedRevisions = acceptedRevisionsResponse?.result?.data || [];
+
+    // console.log(JSON.stringify(acceptedRevisions));
+
+    // const output = acceptedRevisions.reduce((accumulator, currentValue) => {
+    //   accumulator[`phids${Object.entries(accumulator).length}`] =
+    //     currentValue.fields.diffPHID;
+    //   return accumulator;
+    // }, {});
+
+    // const diffsInfoResponse = await request({
+    // 	apiToken,
+    // 	baseUrl,
+    // 	method: "phid.query",
+    // 	fields: {
+    // 		"phids[0]": el.fields.diffPHID
+    // 	}
+    // })
+
     const items: DiffItem[] = await Promise.all(
       (acceptedRevisionsResponse?.result?.data || []).map(async el => {
         return new DiffItem({
-          detail: el.fields.summary,
+          description: el.fields.summary,
           label: el.fields.title,
           uri: (
             await request({
@@ -256,12 +275,12 @@ async function fetchReadyToLand({
     );
 
     const selectedItem = await vscode.window.showQuickPick(items, {
-      placeHolder: "Select a diff",
-      onDidSelectItem: item =>
-        vscode.window.showInformationMessage(`Focus: ${item}`)
+      placeHolder: "Select a diff"
     });
 
-    console.log(selectedItem);
+    if (selectedItem && selectedItem.uri) {
+      vscode.env.openExternal(vscode.Uri.parse(selectedItem.uri));
+    }
 
     // statusBarItem.text = "[Phabricator] Update succeeded";
   } catch (e) {

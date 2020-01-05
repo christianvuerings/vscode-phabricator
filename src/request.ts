@@ -14,6 +14,7 @@ export type Response = {
         slug: string;
         name: string;
         description: string;
+        summary: string;
         title: string;
       };
     }[];
