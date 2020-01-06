@@ -2,9 +2,13 @@
 
 [![Version](https://vsmarketplacebadge.apphb.com/version/christianvuerings.vscode-phabricator.svg)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/christianvuerings.vscode-phabricator.svg)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
 
-Autocompletion support for users and projects in Arcanist diff templates.
+## Features
 
-![Username & project autocompletion in VSCode](images/vscode-phabricator-screencast.gif)
+- **Autocompletion support**: autocomplete users and projects.
+
+  ![Username & project autocompletion in VSCode](images/vscode-phabricator-screencast.gif)
+
+- **Ready to land diffs**: keep track of diffs that are ready to land.
 
 ## Installation
 
