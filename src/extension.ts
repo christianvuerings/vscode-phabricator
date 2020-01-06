@@ -1,117 +1,32 @@
 import * as vscode from "vscode";
-import Fuse from "fuse.js";
-import { URL } from "url";
+import * as statusBar from "./statusBar";
+import { getStore } from "./store";
+import { KeyValueItem } from "./store";
+import completionProvider from "./completionProvider";
 import configuration from "./configuration";
 import request from "./request";
 
 const output = vscode.window.createOutputChannel("Phabricator");
-
-type StoreItem = {
-  detail?: string;
-  key: string;
-  value: string;
-}[];
-
-type Store =
-  | {
-      lastUpdate: number;
-      users: StoreItem;
-      projects: StoreItem;
-    }
-  | undefined;
+const appendToOutput = (text: string) => {
+  const now = new Date();
+  output.appendLine(
+    `[${[now.getHours(), now.getMinutes(), now.getSeconds()]
+      .map(value => (value + "").padStart(2, "0"))
+      .join(":")}] - ${text}`
+  );
+};
+const diffToUrl: { [diffPHID: string]: string } = {};
+let readyToLandDiffs: DiffItem[] = [];
 
 class DiffItem implements vscode.QuickPickItem {
-  description: string;
   label: string;
   uri: string;
 
-  constructor({
-    description,
-    label,
-    uri
-  }: {
-    description: string;
-    label: string;
-    uri: string;
-  }) {
-    this.description = description;
+  constructor({ label, uri }: { label: string; uri: string }) {
     this.label = label;
     this.uri = uri;
   }
 }
-
-const triggerCharacters: string[] = ["@", "#"];
-const provider = ({
-  baseUrl,
-  context
-}: {
-  baseUrl: string;
-  context: vscode.ExtensionContext;
-}) =>
-  vscode.languages.registerCompletionItemProvider(
-    "plaintext",
-    {
-      async provideCompletionItems(
-        document: vscode.TextDocument,
-        position: vscode.Position
-      ) {
-        const store: Store = context.globalState.get(baseUrl);
-        if (!store) {
-          return undefined;
-        }
-
-        const linePrefix = document
-          .lineAt(position)
-          .text.substr(0, position.character);
-
-        if (
-          !linePrefix.startsWith("Reviewers:") &&
-          !linePrefix.startsWith("Subscribers:")
-        ) {
-          return undefined;
-        }
-
-        const matched = linePrefix.match(/([#@][\w-_]+)$/);
-        if (!matched) {
-          return undefined;
-        }
-
-        const isGroup = matched[0].startsWith("#");
-        const search = matched[0].replace(/[#@]/, "");
-        const fuse = new Fuse(isGroup ? store.projects : store.users, {
-          keys: ["key", "value"],
-          threshold: 0.2
-        });
-        const results = fuse.search(search);
-
-        if (!results) {
-          return undefined;
-        }
-
-        return results.map(item => {
-          const completionItem = new vscode.CompletionItem(
-            item.key,
-            vscode.CompletionItemKind.Text
-          );
-
-          const markdown = new vscode.MarkdownString(
-            `**[${item.value}](${new URL(
-              `/${isGroup ? "tag" : "p"}/${item.key}/`,
-              baseUrl
-            )})**`.concat(
-              item.detail ? `\n\n${item.detail.replace(/\s\s#/g, " - ")}` : ""
-            )
-          );
-          markdown.isTrusted = true;
-
-          completionItem.documentation = markdown;
-          completionItem.filterText = `${item.key} ${item.value}`;
-          return completionItem;
-        });
-      }
-    },
-    ...triggerCharacters
-  );
 
 const getItems = async ({
   apiToken,
@@ -125,11 +40,11 @@ const getItems = async ({
   fields?: {
     [key: string]: number | string;
   };
-  method: "differential.revision.search" | "project.search" | "user.search";
+  method: "project.search" | "user.search";
   order?: string;
-}): Promise<StoreItem> => {
+}): Promise<KeyValueItem> => {
   let after;
-  const items: StoreItem = [];
+  const items: KeyValueItem = [];
 
   while (after !== null) {
     const response: {
@@ -163,7 +78,7 @@ const getItems = async ({
         response.result.cursor &&
         response.result.cursor.after;
 
-      output.appendLine(`${method} - ${after}`);
+      appendToOutput(`Cache: ${method} - ${after}`);
 
       response.result.data.forEach(item => {
         items.push(
@@ -185,6 +100,40 @@ const getItems = async ({
   return items;
 };
 
+const getCurrentUser = async ({
+  apiToken,
+  baseUrl
+}: {
+  apiToken: string;
+  baseUrl: string;
+}): Promise<{
+  phid: string;
+  realName: string;
+  userName: string;
+}> => {
+  const response: {
+    result?: {
+      phid: string;
+      realName: string;
+      userName: string;
+    };
+  } = await request({
+    apiToken,
+    baseUrl,
+    method: "user.whoami",
+    // [Pinterest specfic]: Pinterest requires the client and clientVersion to be set
+    fields: baseUrl.includes("phabricator.pinadmin.com")
+      ? {
+          client: "arc",
+          clientVersion: 1000
+        }
+      : {}
+  });
+
+  const { phid = "", realName = "", userName = "" } = response.result || {};
+  return { phid, realName, userName };
+};
+
 const initializeStore = async ({
   apiToken,
   baseUrl,
@@ -194,7 +143,7 @@ const initializeStore = async ({
   baseUrl: string;
   context: vscode.ExtensionContext;
 }) => {
-  const [users, projects] = await Promise.all([
+  const [users, projects, currentUser] = await Promise.all([
     getItems({
       apiToken,
       baseUrl,
@@ -206,40 +155,42 @@ const initializeStore = async ({
       baseUrl,
       method: "project.search",
       order: "name"
+    }),
+    getCurrentUser({
+      apiToken,
+      baseUrl
     })
   ]);
 
+  appendToOutput("Cache: Updated");
+
   context.globalState.update(baseUrl, {
     lastUpdated: Date.now(),
+    currentUser,
     users,
     projects
   });
 };
 
-async function fetchReadyToLand({
+async function updateReadyToLandDiffs({
   apiToken,
-  baseUrl
+  baseUrl,
+  context
 }: {
   apiToken: string;
   baseUrl: string;
+  context: vscode.ExtensionContext;
 }) {
   try {
-    const whoamiResponse: {
-      result?: {
-        phid: string;
-      };
-    } = await request({
-      apiToken,
-      baseUrl,
-      method: "user.whoami",
-      // [Pinterest specfic]: Pinterest requires the client and clientVersion to be set
-      fields: baseUrl.includes("phabricator.pinadmin.com")
-        ? {
-            client: "arc",
-            clientVersion: 1000
-          }
-        : {}
-    });
+    const store = getStore({ context, id: baseUrl });
+
+    if (!readyToLandDiffs.length) {
+      statusBar.setText(`$(loading)`);
+    }
+
+    if (!store?.currentUser?.phid) {
+      await initializeStore({ apiToken, baseUrl, context });
+    }
 
     const acceptedRevisionsResponse: {
       result?: {
@@ -255,13 +206,12 @@ async function fetchReadyToLand({
       baseUrl,
       method: "differential.revision.search",
       fields: {
-        "constraints[authorPHIDs][0]": whoamiResponse.result?.phid || "",
+        "constraints[authorPHIDs][0]": store?.currentUser?.phid || "",
         "constraints[statuses][0]": "accepted"
       }
     });
 
     const acceptedRevisions = acceptedRevisionsResponse?.result?.data || [];
-
     if (!acceptedRevisions.length) {
       vscode.window.showInformationMessage(
         "[Phabricator] Did not find accepted revisions"
@@ -269,56 +219,70 @@ async function fetchReadyToLand({
       return;
     }
 
-    const diffsInfoResponse: {
-      result?: {
-        [key: string]: {
-          uri: string;
-        };
-      };
-    } = await request({
-      apiToken,
-      baseUrl,
-      method: "phid.query",
-      fields: acceptedRevisions.reduce(
-        (accumulator, currentValue) => ({
-          ...accumulator,
-          [`phids[${Object.entries(accumulator).length}]`]: currentValue.fields
-            .diffPHID
-        }),
-        {}
-      )
-    });
+    const diffPHIDs = acceptedRevisions.map(el => el.fields.diffPHID);
+    const diffPHIDsWithoutLinks = diffPHIDs.filter(phid => !diffToUrl[phid]);
 
-    const items: DiffItem[] = acceptedRevisions.map(
+    if (diffPHIDsWithoutLinks && diffPHIDsWithoutLinks.length) {
+      const diffsInfoResponse: {
+        result?: {
+          [key: string]: {
+            uri: string;
+          };
+        };
+      } = await request({
+        apiToken,
+        baseUrl,
+        method: "phid.query",
+        fields: diffPHIDsWithoutLinks.reduce(
+          (accumulator, currentValue) => ({
+            ...accumulator,
+            [`phids[${Object.entries(accumulator).length}]`]: currentValue
+          }),
+          {}
+        )
+      });
+
+      if (!diffsInfoResponse || !diffsInfoResponse.result) {
+        const errorMessage = "[Phabricator] Could not fetch diff URIs";
+        vscode.window.showErrorMessage(errorMessage);
+        appendToOutput(errorMessage);
+        return;
+      }
+
+      for (const [key, value] of Object.entries(diffsInfoResponse.result)) {
+        diffToUrl[key] = value.uri;
+      }
+    }
+
+    readyToLandDiffs = acceptedRevisions.map(
       el =>
         new DiffItem({
-          // description: el.fields.summary,
-          description: "",
           label: el.fields.title,
-          uri: diffsInfoResponse.result
-            ? diffsInfoResponse.result[el.fields.diffPHID].uri
-            : ""
+          uri: diffToUrl[el.fields.diffPHID]
         })
     );
 
-    const selectedItem = await vscode.window.showQuickPick(items, {
-      placeHolder: "Select a diff"
-    });
-
-    if (selectedItem && selectedItem.uri) {
-      vscode.env.openExternal(vscode.Uri.parse(selectedItem.uri));
-    }
+    statusBar.setText(readyToLandDiffs.length);
+    statusBar.get().tooltip = `Phabricator: ${readyToLandDiffs.length} diffs ready to land`;
   } catch (e) {
-    console.error(e);
-    // const errorMessage = `[Phabricator] Could not update the cache. Ensure you can connect to ${baseUrl}`;
-    // vscode.window.showErrorMessage(errorMessage);
-    // output.appendLine(errorMessage);
-    // statusBarItem.text = "[Phabricator] Update failed";
-  }
+    if (!readyToLandDiffs.length) {
+      statusBar.setText(`$(error)`);
+      statusBar.get().tooltip = `Phabricator: could not load accepted diffs`;
+    }
 
-  // setTimeout(() => {
-  //   statusBarItem.hide();
-  // }, 5000);
+    console.error(e);
+    appendToOutput(e.message);
+  }
+}
+
+async function listReadyToLandDiffs() {
+  const selectedItem = await vscode.window.showQuickPick(readyToLandDiffs, {
+    placeHolder: "Select an accepted diff"
+  });
+
+  if (selectedItem && selectedItem.uri) {
+    vscode.env.openExternal(vscode.Uri.parse(selectedItem.uri));
+  }
 }
 
 async function updateCache({
@@ -331,20 +295,16 @@ async function updateCache({
   context: vscode.ExtensionContext;
 }) {
   const statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
+    vscode.StatusBarAlignment.Right
   );
-  statusBarItem.show();
-  statusBarItem.text = "[Phabricator] Fetching data...";
+  appendToOutput(`Cache: Fetch data`);
   try {
     await initializeStore({ apiToken, baseUrl, context });
-    statusBarItem.text = "[Phabricator] Update succeeded";
   } catch (e) {
     console.error(e);
     const errorMessage = `[Phabricator] Could not update the cache. Ensure you can connect to ${baseUrl}`;
     vscode.window.showErrorMessage(errorMessage);
-    output.appendLine(errorMessage);
-    statusBarItem.text = "[Phabricator] Update failed";
+    appendToOutput(errorMessage);
   }
 
   setTimeout(() => {
@@ -353,40 +313,59 @@ async function updateCache({
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-  output.appendLine('Extension "vscode-phabricator" is active');
+  appendToOutput('Extension "vscode-phabricator" is active');
 
   const { apiToken, baseUrl } = await configuration();
   if (!apiToken || !baseUrl) {
     const errorMessage =
       "`phabricator.baseUrl` and `phabricator.apiToken` are required settings for the Phabricator extension";
     console.error(errorMessage);
-    output.appendLine(errorMessage);
+    appendToOutput(errorMessage);
     return;
   }
 
-  const { lastUpdated } = context.globalState.get(baseUrl) || {};
+  // Setup the status bar
+  statusBar.activate();
+  statusBar.setText("");
+  statusBar.get().command = "phabricator-vscode.listReadyToLandDiffs";
+
+  // Update users / projects for autocompletion every 24 hours
+  const { lastUpdated } = getStore({ context, id: baseUrl }) || {};
   const FULL_DAY = 24 * 60 * 60 * 1000;
   if (!lastUpdated || Date.now() - lastUpdated > FULL_DAY) {
     await updateCache({ apiToken, baseUrl, context });
   }
-
   vscode.commands.registerCommand(
     "phabricator-vscode.updateCache",
     async () => {
+      output.show();
       await updateCache({ apiToken, baseUrl, context });
     }
   );
-  vscode.commands.registerCommand("phabricator-vscode.browseRepository", () => {
-    vscode.env.openExternal(vscode.Uri.parse(baseUrl));
-  });
+
+  // Update ready to land diffs every 10 minutes
+  const MINUTES_10 = 10 * 60 * 1000;
+  await updateReadyToLandDiffs({ apiToken, baseUrl, context });
+  setInterval(async () => {
+    await updateReadyToLandDiffs({ apiToken, baseUrl, context });
+  }, MINUTES_10);
   vscode.commands.registerCommand(
-    "phabricator-vscode.fetchReadyToLand",
+    "phabricator-vscode.listReadyToLandDiffs",
     async () => {
-      await fetchReadyToLand({ apiToken, baseUrl });
+      try {
+        await updateReadyToLandDiffs({ apiToken, baseUrl, context });
+      } catch (e) {}
+      await listReadyToLandDiffs();
     }
   );
 
-  context.subscriptions.push(provider({ baseUrl, context }));
+  // Browse the phabricator repository
+  vscode.commands.registerCommand("phabricator-vscode.browseRepository", () => {
+    vscode.env.openExternal(vscode.Uri.parse(baseUrl));
+  });
+
+  // Add the auto completion provider
+  context.subscriptions.push(completionProvider({ baseUrl, context }));
 }
 
 export function deactivate() {}

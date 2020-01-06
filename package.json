@@ -45,8 +45,8 @@
         "title": "Phabricator: Update cache"
       },
       {
-        "command": "phabricator-vscode.fetchReadyToLand",
-        "title": "Phabricator: Fetch ready to land"
+        "command": "phabricator-vscode.listReadyToLandDiffs",
+        "title": "Phabricator: List ready to land diffs"
       }
     ]
   },
