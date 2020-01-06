@@ -1,28 +1,7 @@
 import fetch from "node-fetch";
 import { URL } from "url";
 
-export type Response = {
-  result?: {
-    cursor?: {
-      after?: string;
-    };
-    data?: {
-      fields: {
-        diffPHID: string;
-        username: string;
-        realName: string;
-        slug: string;
-        name: string;
-        description: string;
-        summary: string;
-        title: string;
-      };
-    }[];
-    phid?: string;
-  };
-};
-
-export default async function request({
+export default async function request<T>({
   after,
   apiToken,
   baseUrl,
@@ -40,7 +19,7 @@ export default async function request({
   method: string;
   order?: string;
   setQueryKey?: boolean;
-}): Promise<Response> {
+}): Promise<T> {
   const url = new URL(`/api/${method}`, baseUrl);
   url.searchParams.set("api.token", apiToken);
   if (setQueryKey) {

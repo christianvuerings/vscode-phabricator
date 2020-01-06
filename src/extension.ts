@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import Fuse from "fuse.js";
 import { URL } from "url";
 import configuration from "./configuration";
-import request, { Response } from "./request";
+import request from "./request";
 
 const output = vscode.window.createOutputChannel("Phabricator");
 
@@ -132,7 +132,22 @@ const getItems = async ({
   const items: StoreItem = [];
 
   while (after !== null) {
-    const response: Response = await request({
+    const response: {
+      result?: {
+        cursor?: {
+          after?: string;
+        };
+        data?: {
+          fields: {
+            username: string;
+            realName: string;
+            slug: string;
+            name: string;
+            description: string;
+          };
+        }[];
+      };
+    } = await request({
       after,
       apiToken,
       baseUrl,
@@ -209,7 +224,11 @@ async function fetchReadyToLand({
   baseUrl: string;
 }) {
   try {
-    const whoamiResponse = await request({
+    const whoamiResponse: {
+      result?: {
+        phid: string;
+      };
+    } = await request({
       apiToken,
       baseUrl,
       method: "user.whoami",
@@ -222,7 +241,16 @@ async function fetchReadyToLand({
         : {}
     });
 
-    const acceptedRevisionsResponse = await request({
+    const acceptedRevisionsResponse: {
+      result?: {
+        data?: {
+          fields: {
+            diffPHID: string;
+            title: string;
+          };
+        }[];
+      };
+    } = await request({
       apiToken,
       baseUrl,
       method: "differential.revision.search",
@@ -241,7 +269,13 @@ async function fetchReadyToLand({
       return;
     }
 
-    const diffsInfoResponse = await request({
+    const diffsInfoResponse: {
+      result?: {
+        [key: string]: {
+          uri: string;
+        };
+      };
+    } = await request({
       apiToken,
       baseUrl,
       method: "phid.query",
