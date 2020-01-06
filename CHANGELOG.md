@@ -5,6 +5,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.12] - 2020-01-06
+
+- [feature] Show number of ready to land diffs in the status bar
+- [feature] Standard format for log messages
+- [feature] Fetch ready to land diffs every 10 min
+- [feature] Cache current user
+
 ## [0.0.11] - 2019-12-29
 
 - [docs] Update publish documentation
