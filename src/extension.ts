@@ -277,7 +277,7 @@ async function updateReadyToLandDiffs({
 
 async function listReadyToLandDiffs() {
   const selectedItem = await vscode.window.showQuickPick(readyToLandDiffs, {
-    placeHolder: "Select an accepted diff"
+    placeHolder: "Select Accepted Diff"
   });
 
   if (selectedItem && selectedItem.uri) {
@@ -347,12 +347,12 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // Update ready to land diffs every 10 minutes
-  const MINUTES_10 = 10 * 60 * 1000;
+  // Update ready to land diffs every 5 minutes
+  const MINUTES_5 = 5 * 60 * 1000;
   await updateReadyToLandDiffs({ apiToken, baseUrl, context });
   setInterval(async () => {
     await updateReadyToLandDiffs({ apiToken, baseUrl, context });
-  }, MINUTES_10);
+  }, MINUTES_5);
   vscode.commands.registerCommand(
     "phabricator-vscode.listReadyToLandDiffs",
     async () => {

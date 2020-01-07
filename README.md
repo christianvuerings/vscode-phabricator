@@ -6,9 +6,11 @@
 
 - **Autocompletion support**: autocomplete users and projects.
 
-  ![Username & project autocompletion in VSCode](images/vscode-phabricator-screencast.gif)
+  <img src="images/vscode-phabricator-autocomplete.gif" width="600" alt="Username & project autocompletion in VSCode" />
 
-- **Ready to land diffs**: keep track of diffs that are ready to land.
+- **Ready to land diffs**: list diffs that are ready to land.
+
+  <img src="images/vscode-phabricator-ready-to-land-diffs.gif" width="600" alt="Ready to land diffs" />
 
 ## Installation
 
