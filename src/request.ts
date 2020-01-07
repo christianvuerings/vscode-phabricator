@@ -1,18 +1,15 @@
+import configuration from "./configuration";
 import fetch from "node-fetch";
 import { URL } from "url";
 
 export default async function request<T>({
   after,
-  apiToken,
-  baseUrl,
   fields,
   method,
   order,
   setQueryKey = false
 }: {
   after?: string | null;
-  apiToken: string;
-  baseUrl: string;
   fields?: {
     [key: string]: number | string;
   };
@@ -20,6 +17,7 @@ export default async function request<T>({
   order?: string;
   setQueryKey?: boolean;
 }): Promise<T> {
+  const { apiToken, baseUrl } = await configuration();
   const url = new URL(`/api/${method}`, baseUrl);
   url.searchParams.set("api.token", apiToken);
   if (setQueryKey) {

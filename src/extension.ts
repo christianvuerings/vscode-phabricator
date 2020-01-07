@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as statusBar from "./statusBar";
-import { getStore } from "./store";
+import { getStore, updateStore } from "./store";
 import { KeyValueItem } from "./store";
 import completionProvider from "./completionProvider";
 import configuration from "./configuration";
@@ -29,14 +29,10 @@ class DiffItem implements vscode.QuickPickItem {
 }
 
 const getItems = async ({
-  apiToken,
-  baseUrl,
   fields,
   method,
   order
 }: {
-  apiToken: string;
-  baseUrl: string;
   fields?: {
     [key: string]: number | string;
   };
@@ -64,8 +60,6 @@ const getItems = async ({
       };
     } = await request({
       after,
-      apiToken,
-      baseUrl,
       fields,
       method,
       order,
@@ -100,17 +94,13 @@ const getItems = async ({
   return items;
 };
 
-const getCurrentUser = async ({
-  apiToken,
-  baseUrl
-}: {
-  apiToken: string;
-  baseUrl: string;
-}): Promise<{
+const getCurrentUser = async (): Promise<{
   phid: string;
   realName: string;
   userName: string;
 }> => {
+  const { baseUrl } = await configuration();
+
   const response: {
     result?: {
       phid: string;
@@ -118,8 +108,6 @@ const getCurrentUser = async ({
       userName: string;
     };
   } = await request({
-    apiToken,
-    baseUrl,
     method: "user.whoami",
     // [Pinterest specfic]: Pinterest requires the client and clientVersion to be set
     fields: baseUrl.includes("phabricator.pinadmin.com")
@@ -135,37 +123,28 @@ const getCurrentUser = async ({
 };
 
 const initializeStore = async ({
-  apiToken,
-  baseUrl,
   context
 }: {
-  apiToken: string;
-  baseUrl: string;
   context: vscode.ExtensionContext;
 }) => {
+  const { baseUrl } = await configuration();
   const [users, projects, currentUser] = await Promise.all([
     getItems({
-      apiToken,
-      baseUrl,
       method: "user.search",
       order: "username"
     }),
     getItems({
-      apiToken,
-      baseUrl,
       method: "project.search",
       order: "name"
     }),
-    getCurrentUser({
-      apiToken,
-      baseUrl
-    })
+    getCurrentUser()
   ]);
 
   appendToOutput("Cache: Updated");
 
-  context.globalState.update(baseUrl, {
-    lastUpdated: Date.now(),
+  updateStore({
+    context,
+    id: baseUrl,
     currentUser,
     users,
     projects
@@ -173,15 +152,12 @@ const initializeStore = async ({
 };
 
 async function updateReadyToLandDiffs({
-  apiToken,
-  baseUrl,
   context
 }: {
-  apiToken: string;
-  baseUrl: string;
   context: vscode.ExtensionContext;
 }) {
   try {
+    const { baseUrl } = await configuration();
     const store = getStore({ context, id: baseUrl });
 
     if (!readyToLandDiffs.length) {
@@ -189,7 +165,7 @@ async function updateReadyToLandDiffs({
     }
 
     if (!store?.currentUser?.phid) {
-      await initializeStore({ apiToken, baseUrl, context });
+      await initializeStore({ context });
     }
 
     const acceptedRevisionsResponse: {
@@ -202,8 +178,6 @@ async function updateReadyToLandDiffs({
         }[];
       };
     } = await request({
-      apiToken,
-      baseUrl,
       method: "differential.revision.search",
       fields: {
         "constraints[authorPHIDs][0]": store?.currentUser?.phid || "",
@@ -230,8 +204,6 @@ async function updateReadyToLandDiffs({
           };
         };
       } = await request({
-        apiToken,
-        baseUrl,
         method: "phid.query",
         fields: diffPHIDsWithoutLinks.reduce(
           (accumulator, currentValue) => ({
@@ -285,21 +257,14 @@ async function listReadyToLandDiffs() {
   }
 }
 
-async function updateCache({
-  apiToken,
-  baseUrl,
-  context
-}: {
-  apiToken: string;
-  baseUrl: string;
-  context: vscode.ExtensionContext;
-}) {
+async function updateCache({ context }: { context: vscode.ExtensionContext }) {
   const statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Right
   );
   appendToOutput(`Cache: Fetch data`);
+  const { baseUrl } = await configuration();
   try {
-    await initializeStore({ apiToken, baseUrl, context });
+    await initializeStore({ context });
   } catch (e) {
     console.error(e);
     const errorMessage = `[Phabricator] Could not update the cache. Ensure you can connect to ${baseUrl}`;
@@ -315,10 +280,7 @@ async function updateCache({
 export async function activate(context: vscode.ExtensionContext) {
   appendToOutput('Extension "vscode-phabricator" is active');
 
-  const now = Date.now();
   const { apiToken, baseUrl } = await configuration();
-  const totalTime = Date.now() - now;
-  console.log(`Total time: ${totalTime}`);
 
   if (!apiToken || !baseUrl) {
     const errorMessage =
@@ -337,27 +299,27 @@ export async function activate(context: vscode.ExtensionContext) {
   const { lastUpdated } = getStore({ context, id: baseUrl }) || {};
   const FULL_DAY = 24 * 60 * 60 * 1000;
   if (!lastUpdated || Date.now() - lastUpdated > FULL_DAY) {
-    await updateCache({ apiToken, baseUrl, context });
+    await updateCache({ context });
   }
   vscode.commands.registerCommand(
     "phabricator-vscode.updateCache",
     async () => {
       output.show();
-      await updateCache({ apiToken, baseUrl, context });
+      await updateCache({ context });
     }
   );
 
   // Update ready to land diffs every 5 minutes
   const MINUTES_5 = 5 * 60 * 1000;
-  await updateReadyToLandDiffs({ apiToken, baseUrl, context });
+  await updateReadyToLandDiffs({ context });
   setInterval(async () => {
-    await updateReadyToLandDiffs({ apiToken, baseUrl, context });
+    await updateReadyToLandDiffs({ context });
   }, MINUTES_5);
   vscode.commands.registerCommand(
     "phabricator-vscode.listReadyToLandDiffs",
     async () => {
       try {
-        await updateReadyToLandDiffs({ apiToken, baseUrl, context });
+        await updateReadyToLandDiffs({ context });
       } catch (e) {}
       await listReadyToLandDiffs();
     }

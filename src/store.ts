@@ -6,18 +6,15 @@ export type KeyValueItem = {
   value: string;
 }[];
 
-type Store =
-  | {
-      lastUpdated: number;
-      currentUser?: {
-        phid: string;
-        realName: string;
-        userName: string;
-      };
-      users: KeyValueItem;
-      projects: KeyValueItem;
-    }
-  | undefined;
+type Store = {
+  currentUser?: {
+    phid: string;
+    realName: string;
+    userName: string;
+  };
+  users: KeyValueItem;
+  projects: KeyValueItem;
+};
 
 export const getStore = ({
   context,
@@ -26,6 +23,26 @@ export const getStore = ({
   context: vscode.ExtensionContext;
   id: string;
 }) => {
-  const store: Store = context.globalState.get(id);
+  const store:
+    | (Store & { lastUpdated: number })
+    | undefined = context.globalState.get(id);
   return store;
+};
+
+export const updateStore = ({
+  currentUser,
+  id,
+  projects,
+  users,
+  context
+}: Store & {
+  context: vscode.ExtensionContext;
+  id: string;
+}) => {
+  context.globalState.update(id, {
+    lastUpdated: Date.now(),
+    currentUser,
+    users,
+    projects
+  });
 };

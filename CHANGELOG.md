@@ -6,6 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 - [internal] Improve type information for `.arcrc` file
+- [internal] Always fetch configuration instead of passing it through on activation
 
 ## [0.0.12] - 2020-01-06
 
