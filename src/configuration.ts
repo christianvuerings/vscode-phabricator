@@ -45,22 +45,17 @@ const phabricatorTokenFromArc = async () => {
   }
 };
 
-const configuration = async (): Promise<{
-  apiToken: string;
-  baseUrl: string;
-}> => {
-  const vsCodeConfiguration = vscode.workspace.getConfiguration();
+const apiToken = async (): Promise<string> =>
+  vscode.workspace.getConfiguration().get("phabricator.apiToken") ||
+  (await phabricatorTokenFromArc()) ||
+  "";
 
-  return {
-    apiToken:
-      vsCodeConfiguration.get("phabricator.apiToken") ||
-      (await phabricatorTokenFromArc()) ||
-      "",
-    baseUrl:
-      vsCodeConfiguration.get("phabricator.baseUrl") ||
-      (await phabricatorUriFromArc()) ||
-      ""
-  };
+const baseUrl = async (): Promise<string> =>
+  vscode.workspace.getConfiguration().get("phabricator.baseUrl") ||
+  (await phabricatorUriFromArc()) ||
+  "";
+
+export default {
+  apiToken,
+  baseUrl
 };
-
-export default configuration;

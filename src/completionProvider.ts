@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
-import Fuse from "fuse.js";
 import { URL } from "url";
-import { getStore } from "./store";
+import Fuse from "fuse.js";
+import store from "./store";
 
 const triggerCharacters: string[] = ["@", "#"];
 const completionProvider = ({
@@ -18,8 +18,8 @@ const completionProvider = ({
         document: vscode.TextDocument,
         position: vscode.Position
       ) {
-        const store = getStore({ id: baseUrl, context });
-        if (!store) {
+        const storeInstance = store.get({ id: baseUrl, context });
+        if (!storeInstance) {
           return undefined;
         }
 
@@ -41,10 +41,13 @@ const completionProvider = ({
 
         const isGroup = matched[0].startsWith("#");
         const search = matched[0].replace(/[#@]/, "");
-        const fuse = new Fuse(isGroup ? store.projects : store.users, {
-          keys: ["key", "value"],
-          threshold: 0.2
-        });
+        const fuse = new Fuse(
+          isGroup ? storeInstance.projects : storeInstance.users,
+          {
+            keys: ["key", "value"],
+            threshold: 0.2
+          }
+        );
         const results = fuse.search(search);
 
         if (!results) {

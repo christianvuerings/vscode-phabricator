@@ -4,11 +4,11 @@
 
 ## Features
 
-- **Autocompletion support**: autocomplete users and projects.
+### Autocomplete users and projects
 
   <img src="images/vscode-phabricator-autocomplete.gif" width="600" alt="Username & project autocompletion in VSCode" />
 
-- **Ready to land diffs**: list diffs that are ready to land.
+### Ready to land diffs
 
   <img src="images/vscode-phabricator-ready-to-land-diffs.gif" width="600" alt="Ready to land diffs" />
 

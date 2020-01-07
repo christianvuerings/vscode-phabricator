@@ -1,4 +1,7 @@
+import log from "./log";
 import * as vscode from "vscode";
+import configuration from "./configuration";
+import request from "./request";
 
 export type KeyValueItem = {
   detail?: string;
@@ -16,7 +19,36 @@ type Store = {
   projects: KeyValueItem;
 };
 
-export const getStore = ({
+const initialize = async ({
+  context
+}: {
+  context: vscode.ExtensionContext;
+}) => {
+  const baseUrl = await configuration.baseUrl();
+  const [users, projects, currentUser] = await Promise.all([
+    request.items({
+      method: "user.search",
+      order: "username"
+    }),
+    request.items({
+      method: "project.search",
+      order: "name"
+    }),
+    request.currentUser()
+  ]);
+
+  log.append("Cache: Updated");
+
+  update({
+    context,
+    id: baseUrl,
+    currentUser,
+    users,
+    projects
+  });
+};
+
+const get = ({
   context,
   id
 }: {
@@ -29,7 +61,7 @@ export const getStore = ({
   return store;
 };
 
-export const updateStore = ({
+const update = ({
   currentUser,
   id,
   projects,
@@ -46,3 +78,5 @@ export const updateStore = ({
     projects
   });
 };
+
+export default { get, initialize, update };

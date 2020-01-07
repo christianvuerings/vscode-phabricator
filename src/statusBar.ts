@@ -9,8 +9,8 @@ const activate = () => {
   statusBarItem.show();
 };
 
-const setText = (text: string | number) => {
-  const output = `${text ? " " + text : text}`;
+const text = (input: string | number) => {
+  const output = `${input ? " " + input : input}`;
   statusBarItem.text = `$(gear)${output}`;
 };
 
@@ -18,4 +18,4 @@ const get = () => {
   return statusBarItem;
 };
 
-export { activate, get, setText };
+export default { activate, get, text };
