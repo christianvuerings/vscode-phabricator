@@ -23,14 +23,20 @@
         "title": "Phabricator",
         "properties": {
           "phabricator.apiToken": {
-            "type": "string",
             "description": "Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/",
-            "scope": "window"
+            "scope": "window",
+            "type": "string"
           },
           "phabricator.baseUrl": {
-            "type": "string",
             "description": "Base URL for the phabricator repo: https://phabricator.example.com/",
-            "scope": "window"
+            "scope": "window",
+            "type": "string"
+          },
+          "phabricator.diffNotifications": {
+            "default": true,
+            "description": "Show notifications when diffs get accepted",
+            "scope": "window",
+            "type": "boolean"
           }
         }
       }

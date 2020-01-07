@@ -55,7 +55,11 @@ const baseUrl = async (): Promise<string> =>
   (await phabricatorUriFromArc()) ||
   "";
 
+const diffNotifications = async (): Promise<boolean> =>
+  !!vscode.workspace.getConfiguration().get("phabricator.diffNotifications");
+
 export default {
   apiToken,
-  baseUrl
+  baseUrl,
+  diffNotifications
 };

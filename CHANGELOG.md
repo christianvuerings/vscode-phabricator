@@ -5,7 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- [feature] Show notification when a new diff is ready to land
+- [feature] Show notifications when a new diff is ready to land
+- [feature] Make whether to show diff notifications configurable
 - [internal] Improve type information for `.arcrc` file
 - [internal] Always fetch configuration instead of passing it through on activation
 - [internal] Big refactor to make code more readable

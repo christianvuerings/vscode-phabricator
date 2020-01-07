@@ -129,7 +129,7 @@ async function update({
     statusBar.text(readyToLandDiffs.length);
     statusBar.get().tooltip = `Phabricator: ${readyToLandDiffs.length} diffs ready to land`;
 
-    if (!initialLoad) {
+    if (!initialLoad && (await configuration.diffNotifications())) {
       diffsList
         .filter(
           value => !previousAcceptedDiffs.find(item => item.phid === value.phid)
