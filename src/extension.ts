@@ -315,7 +315,11 @@ async function updateCache({
 export async function activate(context: vscode.ExtensionContext) {
   appendToOutput('Extension "vscode-phabricator" is active');
 
+  const now = Date.now();
   const { apiToken, baseUrl } = await configuration();
+  const totalTime = Date.now() - now;
+  console.log(`Total time: ${totalTime}`);
+
   if (!apiToken || !baseUrl) {
     const errorMessage =
       "`phabricator.baseUrl` and `phabricator.apiToken` are required settings for the Phabricator extension";

@@ -1,7 +1,18 @@
 import * as vscode from "vscode";
 import execa from "execa";
 
-const arcrc = async () => {
+type Arcrc = {
+  config?: {
+    "phabricator.uri": string;
+  };
+  hosts?: {
+    [host: string]: {
+      token: string;
+    };
+  };
+};
+
+const arcrc: () => Promise<Arcrc> = async () => {
   try {
     const result = await execa("cat", [`${process.env.HOME}/.arcrc`]);
     if (result && result.stdout) {
@@ -23,6 +34,9 @@ const phabricatorUriFromArc = async () => {
 const phabricatorTokenFromArc = async () => {
   const response = await arcrc();
   try {
+    if (!response.hosts) {
+      throw new Error("No hosts found in .arcrc file");
+    }
     const firstHost: any = Object.entries(response.hosts)[0][1];
     return String(firstHost.token);
   } catch (e) {

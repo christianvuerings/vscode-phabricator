@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- [internal] Improve type information for `.arcrc` file
+
 ## [0.0.12] - 2020-01-06
 
 - [feature] Show number of ready to land diffs in the status bar
