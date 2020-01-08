@@ -2,15 +2,10 @@ import * as vscode from "vscode";
 import { URL } from "url";
 import Fuse from "fuse.js";
 import store from "./store";
+import track from "./track";
 
 const triggerCharacters: string[] = ["@", "#"];
-const completionProvider = ({
-  baseUrl,
-  context
-}: {
-  baseUrl: string;
-  context: vscode.ExtensionContext;
-}) =>
+const completionProvider = ({ baseUrl }: { baseUrl: string }) =>
   vscode.languages.registerCompletionItemProvider(
     "plaintext",
     {
@@ -18,7 +13,7 @@ const completionProvider = ({
         document: vscode.TextDocument,
         position: vscode.Position
       ) {
-        const storeInstance = store.get({ id: baseUrl, context });
+        const storeInstance = store.get({ id: baseUrl });
         if (!storeInstance) {
           return undefined;
         }
@@ -53,6 +48,13 @@ const completionProvider = ({
         if (!results) {
           return undefined;
         }
+
+        track.event({
+          category: "Event",
+          action: "Count",
+          label: "Autocompletion",
+          value: String(results.length)
+        });
 
         return results.map(item => {
           const completionItem = new vscode.CompletionItem(

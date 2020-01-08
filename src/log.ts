@@ -11,7 +11,7 @@ const append = (text: string) => {
 };
 
 const show = () => {
-  output.show;
+  output.show();
 };
 
 export default {

@@ -4,6 +4,7 @@ import log from "./log";
 import request from "./request";
 import statusBar from "./statusBar";
 import store from "./store";
+import track from "./track";
 
 class DiffItem implements vscode.QuickPickItem {
   label: string;
@@ -20,9 +21,15 @@ let readyToLandDiffs: {
   label: string;
   phid: string;
   uri: string;
-}[] = [];
+}[];
 
 async function list() {
+  track.event({
+    category: "Event",
+    action: "List",
+    label: "Accepted Diffs"
+  });
+
   const selectedItem = await vscode.window.showQuickPick(
     readyToLandDiffs.map(
       ({ label, uri }) =>
@@ -38,26 +45,27 @@ async function list() {
 
   if (selectedItem && selectedItem.uri) {
     vscode.env.openExternal(vscode.Uri.parse(selectedItem.uri));
+
+    track.event({
+      category: "Event",
+      action: "Open URL",
+      label: "Accepted Diffs - List"
+    });
   }
 }
 
-async function update({
-  context,
-  initialLoad = false
-}: {
-  context: vscode.ExtensionContext;
-  initialLoad?: boolean;
-}) {
+async function update(initialLoad: boolean = false) {
   try {
     const baseUrl = await configuration.baseUrl();
-    const storeInstance = store.get({ context, id: baseUrl });
+    const storeInstance = store.get({ id: baseUrl });
+    const isFirstUndefinedFetch = typeof readyToLandDiffs === "undefined";
 
     if (initialLoad) {
       statusBar.text(`$(loading)`);
     }
 
     if (!storeInstance?.currentUser?.phid) {
-      await store.initialize({ context });
+      await store.initialize();
     }
 
     const acceptedRevisionsResponse: {
@@ -78,10 +86,16 @@ async function update({
     });
 
     const acceptedRevisions = acceptedRevisionsResponse?.result?.data || [];
+
+    track.event({
+      category: "Event",
+      action: "Count",
+      label: "Accepted Diffs",
+      value: String(acceptedRevisions.length)
+    });
+
     if (!acceptedRevisions.length) {
-      vscode.window.showInformationMessage(
-        "[Phabricator] Did not find accepted revisions"
-      );
+      statusBar.text(0);
       return;
     }
 
@@ -123,15 +137,13 @@ async function update({
       label: el.fields.title,
       uri: diffToUrl[el.fields.diffPHID]
     }));
-    const previousAcceptedDiffs = [...readyToLandDiffs].filter(
-      diff => diff.phid !== "PHID-DIFF-f7kzdr43nut2mc42biaa"
-    );
+    const previousAcceptedDiffs = [...(readyToLandDiffs || [])];
     readyToLandDiffs = diffsList;
 
     statusBar.text(readyToLandDiffs.length);
     statusBar.get().tooltip = `Phabricator: ${readyToLandDiffs.length} diffs ready to land`;
 
-    if (!initialLoad && (await configuration.diffNotifications())) {
+    if (!isFirstUndefinedFetch && (await configuration.diffNotifications())) {
       diffsList
         .filter(
           value => !previousAcceptedDiffs.find(item => item.phid === value.phid)
@@ -145,6 +157,12 @@ async function update({
 
           if (response === open) {
             vscode.env.openExternal(vscode.Uri.parse(diff.uri));
+
+            track.event({
+              category: "Event",
+              action: "Open URL",
+              label: "Accepted Diffs - Notification"
+            });
           }
         });
     }
