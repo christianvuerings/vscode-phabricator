@@ -123,7 +123,9 @@ async function update({
       label: el.fields.title,
       uri: diffToUrl[el.fields.diffPHID]
     }));
-    const previousAcceptedDiffs = [...readyToLandDiffs];
+    const previousAcceptedDiffs = [...readyToLandDiffs].filter(
+      diff => diff.phid !== "PHID-DIFF-f7kzdr43nut2mc42biaa"
+    );
     readyToLandDiffs = diffsList;
 
     statusBar.text(readyToLandDiffs.length);
@@ -135,9 +137,9 @@ async function update({
           value => !previousAcceptedDiffs.find(item => item.phid === value.phid)
         )
         .forEach(async diff => {
-          const open = "Open diff";
+          const open = "Open Diff";
           const response = await vscode.window.showInformationMessage(
-            `[Pabricator]: "${diff.label}" is ready to land`,
+            `"${diff.label}" is ready to land`,
             open
           );
 

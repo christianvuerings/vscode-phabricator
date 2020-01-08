@@ -4,13 +4,17 @@
 
 ## Features
 
-### Autocomplete users and projects
+### Autocomplete: Users and Projects
 
   <img src="images/vscode-phabricator-autocomplete.gif" width="600" alt="Username & project autocompletion in VSCode" />
 
-### Ready to land diffs
+### List: Ready to Land Diffs
 
-  <img src="images/vscode-phabricator-ready-to-land-diffs.gif" width="600" alt="Ready to land diffs" />
+  <img src="images/vscode-phabricator-ready-to-land-diffs.gif" width="600" alt="List ready to land diffs" />
+
+### Notify: Ready to Land Diffs
+
+  <img src="images/vscode-phabricator-accepted-diff-notification.png" width="600" alt="Notify about ready to land diffs" />
 
 ## Installation
 
@@ -18,11 +22,11 @@
 
 ## Configuration
 
-**Note**: By default the extension uses `~/.arcrc` to read in the settings. Only override them when the extension doesn't work:
-
-- `phabricator.apiToken`: Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/
-- `phabricator.baseUrl`: Base URL for the phabricator repo: https://phabricator.example.com/
+- `phabricator.apiToken` **(\*)**: Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/
+- `phabricator.baseUrl` **(\*)**: Base URL for the phabricator repo: https://phabricator.example.com/
 - `phabricator.diffNotifications`: Show notifications when diffs get accepted
+
+**(\*)** By default the extension uses `~/.arcrc` to read in these settings. Only override them when the extension doesn't work.
 
 ## Publish
 
