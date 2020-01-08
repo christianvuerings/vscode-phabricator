@@ -58,8 +58,12 @@ const baseUrl = async (): Promise<string> =>
 const diffNotifications = async (): Promise<boolean> =>
   !!vscode.workspace.getConfiguration().get("phabricator.diffNotifications");
 
+const enableTelemetry = async (): Promise<boolean> =>
+  !!vscode.workspace.getConfiguration().get("phabricator.enableTelemetry");
+
 export default {
   apiToken,
   baseUrl,
-  diffNotifications
+  diffNotifications,
+  enableTelemetry
 };

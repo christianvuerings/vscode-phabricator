@@ -37,6 +37,12 @@
             "description": "Show notifications when diffs get accepted",
             "scope": "window",
             "type": "boolean"
+          },
+          "phabricator.enableTelemetry": {
+            "default": true,
+            "description": "Enable usage data and errors tracking (Google Analytics)",
+            "scope": "window",
+            "type": "boolean"
           }
         }
       }

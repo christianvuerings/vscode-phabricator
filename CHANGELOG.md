@@ -5,9 +5,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.13] - 2020-01-08
+
 - [feature] Show notifications when a new diff is ready to land
 - [feature] Make whether to show diff notifications configurable
 - [feature] Track usage with google analytics
+- [feature] Make whether to track configurable
 - [internal] Improve type information for `.arcrc` file
 - [internal] Always fetch configuration instead of passing it through on activation
 - [internal] Big refactor to make code more readable

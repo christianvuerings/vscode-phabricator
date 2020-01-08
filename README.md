@@ -25,6 +25,7 @@
 - `phabricator.apiToken` **(\*)**: Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/
 - `phabricator.baseUrl` **(\*)**: Base URL for the phabricator repo: https://phabricator.example.com/
 - `phabricator.diffNotifications`: Show notifications when diffs get accepted
+- `phabricator.enableTelemetry`: Enable usage data and errors tracking (Google Analytics)
 
 **(\*)** By default the extension uses `~/.arcrc` to read in these settings. Only override them when the extension doesn't work.
 

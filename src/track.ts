@@ -1,6 +1,7 @@
 import got from "got";
 import { URL, URLSearchParams } from "url";
 import configuration from "./configuration";
+import log from "./log";
 import store from "./store";
 import uuid from "uuid/v5";
 
@@ -18,6 +19,12 @@ const event = async ({
   label: string;
   value?: string;
 }) => {
+  // Only track usage when the user enables telemetry for this extension
+  const enableTelemetry = await configuration.enableTelemetry();
+  if (!enableTelemetry) {
+    return;
+  }
+
   const baseUrl = await configuration.baseUrl();
   const storeInstance = store.get({ id: baseUrl });
   const userId = storeInstance?.currentUser?.userName || "_unknown";
@@ -58,24 +65,12 @@ const event = async ({
   const url = new URL("http://www.google-analytics.com/collect");
   url.search = searchParams.toString();
 
-  const response = await got.post(url.toString());
-  return response;
-
-  // const response = await fetch("http://www.google-analytics.com/collect", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     "User-Agent": "vscode-phabricator"
-  //   },
-  //   body: JSON.stringify(data)
-  // });
-  // const text = await response.text();
-  // console.log(text);
-  // debugger;
-  // console.log(response);
-  // return await response.json();
-
-  // return request.post("http://www.google-analytics.com/collect", data);
+  try {
+    got.post(url.toString());
+  } catch (e) {
+    console.error(e);
+    log.append(`Error trying to track: ${e.message}`);
+  }
 };
 
 export default {
