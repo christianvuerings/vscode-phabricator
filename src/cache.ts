@@ -1,26 +1,24 @@
-import * as vscode from "vscode";
 import configuration from "./configuration";
 import log from "./log";
 import store from "./store";
+import track from "./track";
 
 async function update() {
-  const statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right
-  );
   log.append(`Cache: Fetch data`);
   const baseUrl = await configuration.baseUrl();
   try {
     await store.initialize();
   } catch (e) {
     console.error(e);
-    const errorMessage = `[Phabricator] Could not update the cache. Ensure you can connect to ${baseUrl}`;
-    vscode.window.showErrorMessage(errorMessage);
+    const errorMessage = `Could not update the cache. Ensure you can connect to ${baseUrl}`;
+    track.event({
+      category: "Error",
+      action: "Error",
+      label: errorMessage
+    });
     log.append(errorMessage);
+    log.show();
   }
-
-  setTimeout(() => {
-    statusBarItem.hide();
-  }, 5000);
 }
 
 export default {

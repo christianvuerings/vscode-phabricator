@@ -5,6 +5,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.14] - 2020-01-09
+
+- [internal] Track errors
+- [internal] Update Google Analytics id to ignore test events
+- [internal] Fail silently when we can not update the phabricator cache
+
 ## [0.0.13] - 2020-01-08
 
 - [feature] Show notifications when a new diff is ready to land

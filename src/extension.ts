@@ -23,6 +23,11 @@ export async function activate(context: vscode.ExtensionContext) {
       "`phabricator.baseUrl` and `phabricator.apiToken` are required settings for the Phabricator extension";
     console.error(errorMessage);
     log.append(errorMessage);
+    track.event({
+      category: "Error",
+      action: "Error",
+      label: errorMessage
+    });
     return;
   }
 

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import execa from "execa";
+import track from "./track";
 
 type Arcrc = {
   config?: {
@@ -41,6 +42,11 @@ const phabricatorTokenFromArc = async () => {
     return String(firstHost.token);
   } catch (e) {
     console.error(e);
+    track.event({
+      category: "Error",
+      action: "Error",
+      label: e.message
+    });
     return "";
   }
 };

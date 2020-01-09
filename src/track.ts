@@ -5,7 +5,7 @@ import log from "./log";
 import store from "./store";
 import uuid from "uuid/v5";
 
-const GA_TRACKING_ID = "UA-190225-20";
+const GA_TRACKING_ID = "UA-190225-21";
 const uuidNamespace = "f5ea8702-8da7-479d-bea9-f69049e2090b";
 
 const event = async ({
@@ -15,7 +15,7 @@ const event = async ({
   value
 }: {
   category: "Event" | "Error";
-  action: "Activate" | "Count" | "List" | "Open URL";
+  action: "Activate" | "Count" | "List" | "Open URL" | "Error";
   label: string;
   value?: string;
 }) => {
@@ -53,7 +53,7 @@ const event = async ({
     ...(value ? { ev: value } : {}),
     // Custom dimension: User ID
     ...(userId ? { cd1: userId } : {}),
-    // Custom dimension: Repository
+    // Custom dimension: Repository URL
     ...(baseUrl ? { cd2: baseUrl } : {})
   };
 

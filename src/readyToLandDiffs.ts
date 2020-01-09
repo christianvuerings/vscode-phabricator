@@ -174,6 +174,11 @@ async function update(initialLoad: boolean = false) {
 
     console.error(e);
     log.append(e.message);
+    track.event({
+      category: "Error",
+      action: "Error",
+      label: e.message
+    });
   }
 }
 
