@@ -43,4 +43,4 @@ vsce publish patch
 
 ## Acknowledgements
 
-- Heavily inspired by [@jparise](https://github.com/jparise)'s [vscode-vim](https://github.com/jparise/vim-phabricator) plugin.
+- Heavily inspired by [@jparise](https://github.com/jparise)'s [vim-phabricator](https://github.com/jparise/vim-phabricator) plugin.
