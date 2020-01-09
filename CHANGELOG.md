@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.15] - 2020-01-09
+
+- [feature] Disable accepte diff notifications by default - we also need to look at the build status, not just the diff status
+
 ## [0.0.14] - 2020-01-09
 
 - [internal] Track errors

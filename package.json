@@ -33,7 +33,7 @@
             "type": "string"
           },
           "phabricator.diffNotifications": {
-            "default": true,
+            "default": false,
             "description": "Show notifications when diffs get accepted",
             "scope": "window",
             "type": "boolean"
