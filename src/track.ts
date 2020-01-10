@@ -2,6 +2,7 @@ import got from "got";
 import { URL, URLSearchParams } from "url";
 import configuration from "./configuration";
 import log from "./log";
+import packageJSON from "./packageJSON";
 import store from "./store";
 import uuid from "uuid/v5";
 
@@ -26,8 +27,8 @@ const event = async ({
   }
 
   const baseUrl = await configuration.baseUrl();
-  const storeInstance = store.get({ id: baseUrl });
-  const userId = storeInstance?.currentUser?.userName || "_unknown";
+  const userId =
+    store.get({ id: baseUrl })?.currentUser?.userName || "_unknown";
 
   // List of all google analytics parameters: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
   const data = {
@@ -52,9 +53,11 @@ const event = async ({
     // Event value.
     ...(value ? { ev: value } : {}),
     // Custom dimension: User ID
-    ...(userId ? { cd1: userId } : {}),
+    cd1: userId,
     // Custom dimension: Repository URL
-    ...(baseUrl ? { cd2: baseUrl } : {})
+    cd2: baseUrl || "_unknown",
+    // Custom dimension: Extension Version
+    cd3: packageJSON.get()?.version || "_unknown"
   };
 
   const searchParams = new URLSearchParams();

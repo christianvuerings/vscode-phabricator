@@ -5,6 +5,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.16] - 2020-01-10
+
+- [bugfix] Fix link text to vim-phabricator
+- [feature] Add version number as a custom google analytics dimension
+
 ## [0.0.15] - 2020-01-09
 
 - [feature] Disable accepte diff notifications by default - we also need to look at the build status, not just the diff status
