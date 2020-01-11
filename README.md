@@ -4,17 +4,11 @@
 
 ## Features
 
-### Autocomplete: Users and Projects
+- **Autocomplete**: Users and Projects
+- **List**: Accepted Diffs with Build Status
+- **Notify**: Ready to Land Diffs
 
-  <img src="images/vscode-phabricator-autocomplete.gif" width="600" alt="Username & project autocompletion in VSCode" />
-
-### List: Ready to Land Diffs
-
-  <img src="images/vscode-phabricator-ready-to-land-diffs.gif" width="600" alt="List ready to land diffs" />
-
-### Notify: Ready to Land Diffs
-
-  <img src="images/vscode-phabricator-accepted-diff-notification.png" width="600" alt="Notify about ready to land diffs" />
+<img src="images/vscode-phabricator-screencast.gif" width="700" alt="Username & project autocompletion in VSCode" />
 
 ## Installation
 
