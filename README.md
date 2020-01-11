@@ -4,9 +4,9 @@
 
 ## Features
 
-- **Autocomplete**: Users and Projects
-- **List**: Accepted Diffs with Build Status
-- **Notify**: Ready to Land Diffs
+- 💬 **Autocomplete**: users and projects
+- 🗒️ **List**: accepted diffs with build status
+- 🔔 **Notify**: ready to land diffs
 
 <img src="images/vscode-phabricator-screencast.gif" width="700" alt="Username & project autocompletion in VSCode" />
 
