@@ -10,8 +10,8 @@ const activate = () => {
 };
 
 const text = (input: string | number) => {
-  const output = `${input ? " " + input : input}`;
-  statusBarItem.text = `$(gear)${output}`;
+  const output = `${input ? ": " + input : input}`;
+  statusBarItem.text = `Phabricator${output}`;
 };
 
 const get = () => {

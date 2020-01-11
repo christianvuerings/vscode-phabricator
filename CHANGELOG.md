@@ -5,6 +5,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.17] - 2020-01-11
+
+- [feature] Show accepted diffs with their build status
+- [feature] Only show notifications for ready to land (passed) diffs
+- [bugfix] Convert confusing gear icon to descriptive text
+- [internal] Update README
+
 ## [0.0.16] - 2020-01-10
 
 - [bugfix] Fix link text to vim-phabricator
