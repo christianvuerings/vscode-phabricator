@@ -6,6 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 - [internal] Clean up parameter to `request` - use `fields` instead
+- [internal] Detect and fix circular dependency
 
 ## [0.0.17] - 2020-01-11
 

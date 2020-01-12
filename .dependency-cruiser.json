@@ -1,0 +1,28 @@
+{
+  "forbidden": [
+    {
+      "name": "no-circular",
+      "severity": "error",
+      "from": { "pathNot": "^(node_modules)" },
+      "to": { "circular": true }
+    },
+    {
+      "name": "no-unreachable-from-root",
+      "severity": "error",
+      "from": {
+        "path": "src/index\\.js$"
+      },
+      "to": {
+        "path": "src",
+        "pathNot": "\\.spec\\.(js|ts)$|\\.d\\.ts$",
+        "reachable": false
+      }
+    },
+    {
+      "name": "no-non-dynamic-dependencies",
+      "severity": "error",
+      "from": {},
+      "to": { "dynamic": true }
+    }
+  ]
+}
