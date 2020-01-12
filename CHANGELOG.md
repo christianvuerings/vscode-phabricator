@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- [internal] Clean up parameter to `request` - use `fields` instead
+
 ## [0.0.17] - 2020-01-11
 
 - [feature] Show accepted diffs with their build status

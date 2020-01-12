@@ -5,19 +5,13 @@ import { URL } from "url";
 import { KeyValueItem } from "./store";
 
 async function get<T>({
-  after,
   fields,
-  method,
-  order,
-  setQueryKey = false
+  method
 }: {
-  after?: string | null;
   fields?: {
     [key: string]: number | string;
   };
   method: string;
-  order?: string;
-  setQueryKey?: boolean;
 }): Promise<T> {
   const [apiToken, baseUrl] = await Promise.all([
     configuration.apiToken(),
@@ -25,15 +19,6 @@ async function get<T>({
   ]);
   const url = new URL(`/api/${method}`, baseUrl);
   url.searchParams.set("api.token", apiToken);
-  if (setQueryKey) {
-    url.searchParams.set("queryKey", "active");
-  }
-  if (order) {
-    url.searchParams.set("order[0]", order);
-  }
-  if (after) {
-    url.searchParams.set("after", after);
-  }
   if (fields) {
     for (const [key, value] of Object.entries(fields)) {
       url.searchParams.set(key, String(value));
@@ -50,14 +35,12 @@ async function get<T>({
 
 const items = async ({
   fields,
-  method,
-  order
+  method
 }: {
   fields?: {
     [key: string]: number | string;
   };
   method: "project.search" | "user.search";
-  order?: string;
 }): Promise<KeyValueItem> => {
   let after;
   const items: KeyValueItem = [];
@@ -79,11 +62,12 @@ const items = async ({
         }[];
       };
     } = await get({
-      after,
-      fields,
-      method,
-      order,
-      setQueryKey: true
+      fields: {
+        ...fields,
+        ...(after ? { after } : {}),
+        queryKey: "active"
+      },
+      method
     });
 
     if (response.result && response.result.data) {

@@ -24,11 +24,15 @@ const initialize = async () => {
   const [users, projects, currentUser] = await Promise.all([
     request.items({
       method: "user.search",
-      order: "username"
+      fields: {
+        "order[0]": "username"
+      }
     }),
     request.items({
       method: "project.search",
-      order: "name"
+      fields: {
+        "order[0]": "name"
+      }
     }),
     request.currentUser()
   ]);
