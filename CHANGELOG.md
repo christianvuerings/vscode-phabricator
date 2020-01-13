@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.0] - 2020-01-13
+
 - [internal] Clean up parameter to `request` - use `fields` instead
 - [internal] Detect and fix circular dependency
 - [internal] Update badges to use shields.io
