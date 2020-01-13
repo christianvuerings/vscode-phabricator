@@ -5,6 +5,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.1] - 2020-01-13
+
+- [docs] Update installation docs
+- [docs] Show GitHub CI workflow status for the master branch
+
 ## [1.0.0] - 2020-01-13
 
 - [internal] Clean up parameter to `request` - use `fields` instead
