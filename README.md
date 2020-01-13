@@ -1,6 +1,8 @@
 # Phabribator Extension for VSCode
 
-[![Version](https://vsmarketplacebadge.apphb.com/version/christianvuerings.vscode-phabricator.svg)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/christianvuerings.vscode-phabricator.svg)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/christianvuerings.vscode-phabricator)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/christianvuerings.vscode-phabricator)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/christianvuerings/vscode-phabricator/CI)](https://github.com/pinterest/christianvuerings/vscode-phabricator?query=workflow%3ACI+)
 
 ## Features
 

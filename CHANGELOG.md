@@ -7,6 +7,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - [internal] Clean up parameter to `request` - use `fields` instead
 - [internal] Detect and fix circular dependency
+- [internal] Update badges to use shields.io
+- [internal] Add GitHub Workflows: CI
 
 ## [0.0.17] - 2020-01-11
 
