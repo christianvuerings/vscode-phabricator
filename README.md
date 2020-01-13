@@ -12,11 +12,15 @@
 
 <img src="images/vscode-phabricator-screencast.gif" width="700" alt="Username & project autocompletion in VSCode" />
 
-## Installation
+## Install
 
-- Search for "Phabricator" in the VS Code extensions panel or [download on the marketplace](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator).
+Install options for `vscode-phabricator`:
 
-## Configuration
+- [Download from the marketplace](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
+- Install from the command line: `code --install-extension christianvuerings.vscode-phabricator`
+- Search for `Phabricator` in the VS Code extensions panel
+
+## Configure
 
 - `phabricator.apiToken` **(\*)**: Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/
 - `phabricator.baseUrl` **(\*)**: Base URL for the phabricator repo: https://phabricator.example.com/
