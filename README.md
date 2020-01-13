@@ -2,7 +2,7 @@
 
 [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/christianvuerings.vscode-phabricator)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
 [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/christianvuerings.vscode-phabricator)](https://marketplace.visualstudio.com/items?itemName=christianvuerings.vscode-phabricator)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/christianvuerings/vscode-phabricator/CI)](https://github.com/pinterest/christianvuerings/vscode-phabricator?query=workflow%3ACI+)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/christianvuerings/vscode-phabricator/CI)](https://github.com/christianvuerings/vscode-phabricator/actions?query=workflow%3ACI+branch%3Amaster)
 
 ## Features
 
