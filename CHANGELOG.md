@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- [docs] Add instructions on how to make vscode the default editor for arcanist.
+
 ## [1.0.1] - 2020-01-13
 
 - [docs] Update installation docs

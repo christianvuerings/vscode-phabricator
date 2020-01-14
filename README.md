@@ -20,6 +20,12 @@ Install options for `vscode-phabricator`:
 - Install from the command line: `code --install-extension christianvuerings.vscode-phabricator`
 - Search for `Phabricator` in the VS Code extensions panel
 
+Make sure to set VSCode as the default editor for arcanist:
+
+```
+arc set-config editor "code --wait"
+```
+
 ## Configure
 
 - `phabricator.apiToken` **(\*)**: Generate your phabricator API token: https://phabricator.example.com/settings/user/USERNAME/page/apitokens/
