@@ -5,6 +5,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- [bugfix] Fix .map of undefined error
 - [docs] Add instructions on how to make vscode the default editor for arcanist.
 
 ## [1.0.1] - 2020-01-13
