@@ -44,7 +44,7 @@ type DiffList = {
   uri: string;
   status: BuildStatus;
 }[];
-let acceptedDiffs: DiffList;
+let acceptedDiffs: DiffList | null;
 
 const updateStatusBar = (diffsList: DiffList) => {
   const counts = diffsList.reduce(
@@ -143,6 +143,20 @@ async function list() {
     action: "List",
     label: "Accepted Diffs"
   });
+
+  if (!acceptedDiffs) {
+    vscode.window.showInformationMessage(
+      "[Phabricator] Accepted diffs can not be fetched"
+    );
+    return;
+  }
+
+  if (!acceptedDiffs.length) {
+    vscode.window.showInformationMessage(
+      "[Phabricator] All accepted diffs have been merged"
+    );
+    return;
+  }
 
   const selectedItem = await vscode.window.showQuickPick(
     acceptedDiffs.map(
