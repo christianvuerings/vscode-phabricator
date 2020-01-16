@@ -10,7 +10,7 @@ const activate = () => {
 };
 
 const text = (input: string | number) => {
-  const output = `${input ? ": " + input : input}`;
+  const output = `${input != null ? ": " + input : input}`;
   statusBarItem.text = `Phabricator${output}`;
 };
 
