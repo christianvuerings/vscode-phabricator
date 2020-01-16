@@ -5,6 +5,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.3] - 2020-01-16
+
+- [bugfix] Show correct message when there are no accepted diffs
+
+## [1.0.2] - 2020-01-15
+
 - [bugfix] Fix .map of undefined error
 - [docs] Add instructions on how to make vscode the default editor for arcanist.
 

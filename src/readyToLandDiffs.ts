@@ -223,6 +223,7 @@ async function update(initialLoad: boolean = false) {
     });
 
     if (!acceptedRevisions.length) {
+      acceptedDiffs = [];
       statusBar.text(0);
       return;
     }
