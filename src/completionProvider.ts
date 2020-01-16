@@ -18,16 +18,25 @@ const completionProvider = ({ baseUrl }: { baseUrl: string }) =>
           return undefined;
         }
 
-        const linePrefix = document
-          .lineAt(position)
-          .text.substr(0, position.character);
-
+        // Check if one of the first 500 lines of the file start with `Reviewers:` or `Subscribers:`
+        // Only checking the first 500 lines to limit the impact on big text files
         if (
-          !linePrefix.startsWith("Reviewers:") &&
-          !linePrefix.startsWith("Subscribers:")
+          !document
+            .getText()
+            .split("\n")
+            .slice(0, 500)
+            .some(
+              value =>
+                value.startsWith("Reviewers:") ||
+                value.startsWith("Subscribers:")
+            )
         ) {
           return undefined;
         }
+
+        const linePrefix = document
+          .lineAt(position)
+          .text.substr(0, position.character);
 
         const matched = linePrefix.match(/([#@][\w-_]+)$/);
         if (!matched) {

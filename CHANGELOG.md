@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.4] - 2020-01-16
+
+- [feature] Allow for autocompletion anywhere in the `arc diff` message
+
 ## [1.0.3] - 2020-01-16
 
 - [bugfix] Show correct message when there are no accepted diffs
