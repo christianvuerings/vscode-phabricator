@@ -3,7 +3,7 @@
   "displayName": "Phabricator",
   "description": "Phabricator support in VSCode",
   "publisher": "christianvuerings",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "engines": {
     "vscode": "^1.41.0"
   },
@@ -53,12 +53,20 @@
         "title": "Phabricator: Browse repository"
       },
       {
+        "command": "phabricator-vscode.listReadyToLandDiffs",
+        "title": "Phabricator: List ready to land diffs"
+      },
+      {
         "command": "phabricator-vscode.updateCache",
         "title": "Phabricator: Update cache"
       },
       {
-        "command": "phabricator-vscode.listReadyToLandDiffs",
-        "title": "Phabricator: List ready to land diffs"
+        "command": "phabricator-vscode.setAranistEditorToVscode",
+        "title": "Phabricator: Set Arcanist editor to VS Code"
+      },
+      {
+        "command": "phabricator-vscode.unsetAranistEditorToVscode",
+        "title": "Phabricator: Unset Arcanist editor to VS Code"
       }
     ]
   },

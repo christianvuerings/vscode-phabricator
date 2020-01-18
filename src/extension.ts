@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import cache from "./cache";
 import completionProvider from "./completionProvider";
 import configuration from "./configuration";
+import aranistEditorToVscode from "./aranistEditorToVscode";
 import extensionContext from "./context";
 import log from "./log";
 import readyToLandDiffs from "./readyToLandDiffs";
@@ -50,26 +51,38 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // Update ready to land diffs every minute
-  const MINUTES_1 = 1 * 60 * 1000;
-  await readyToLandDiffs.update(true);
-  setInterval(async () => {
-    await readyToLandDiffs.update();
-  }, MINUTES_1);
-  vscode.commands.registerCommand(
-    "phabricator-vscode.listReadyToLandDiffs",
-    async () => {
-      try {
-        await readyToLandDiffs.update();
-      } catch (e) {}
-      await readyToLandDiffs.list();
-    }
-  );
+  (async () => {
+    // Update ready to land diffs every minute
+    const MINUTES_1 = 1 * 60 * 1000;
+    await readyToLandDiffs.update(true);
+    setInterval(async () => {
+      await readyToLandDiffs.update();
+    }, MINUTES_1);
+    vscode.commands.registerCommand(
+      "phabricator-vscode.listReadyToLandDiffs",
+      async () => {
+        try {
+          await readyToLandDiffs.update();
+        } catch (e) {}
+        await readyToLandDiffs.list();
+      }
+    );
+  })();
 
   // Browse phabricator repository
   vscode.commands.registerCommand("phabricator-vscode.browseRepository", () => {
     vscode.env.openExternal(vscode.Uri.parse(baseUrl));
   });
+
+  // Make VS Code the default editor
+  vscode.commands.registerCommand(
+    "phabricator-vscode.setAranistEditorToVscode",
+    aranistEditorToVscode.set
+  );
+  vscode.commands.registerCommand(
+    "phabricator-vscode.unsetAranistEditorToVscode",
+    aranistEditorToVscode.unset
+  );
 
   // Add auto completion provider
   context.subscriptions.push(completionProvider({ baseUrl }));
