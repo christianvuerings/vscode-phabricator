@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.5] - 2020-01-18
+
+- [feature] Add commands to set VS Code as the Aranist editor
+
 ## [1.0.4] - 2020-01-16
 
 - [feature] Allow for autocompletion anywhere in the `arc diff` message

@@ -20,7 +20,15 @@ Install options for `vscode-phabricator`:
 - Install from the command line: `code --install-extension christianvuerings.vscode-phabricator`
 - Search for `Phabricator` in the VS Code extensions panel
 
-Make sure to set VSCode as the default editor for arcanist:
+## Prerequisites
+
+### Set Arcanist editor to VS Code
+
+Run the `Phabricator: Set Arcanist editor to VS Code` command:
+
+<img src="images/arcanist-set-default-editor-vscode.png" width="500" alt="Username & project autocompletion in VSCode" />
+
+Or run the following on the command line:
 
 ```
 arc set-config editor "code --wait"
