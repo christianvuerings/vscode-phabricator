@@ -74,7 +74,7 @@
     "compile": "tsc -p ./",
     "eslint": "eslint ./src/**/*.ts",
     "pretest": "npm run compile",
-    "test": "node ./out/test/runTest.js",
+    "test": "TZ=UTC node ./out/test/runTest.js",
     "test:dependencycheck": "depcruise --exclude \"^node_modules\" --validate .dependency-cruiser.json src",
     "vscode:prepublish": "npm run compile",
     "watch": "tsc -watch -p ./"
