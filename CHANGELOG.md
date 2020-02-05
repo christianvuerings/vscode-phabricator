@@ -5,6 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.6] - 2020-02-05
+
 - [internal] Add EditorConfig file
 - [internal] Add CI tests
 
