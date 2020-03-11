@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.7] - 2020-03-11
+
+- [bugfix] Stops cache error logging from stealing focus (#9)
+
 ## [1.0.6] - 2020-02-05
 
 - [internal] Add EditorConfig file
