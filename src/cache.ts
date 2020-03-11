@@ -17,7 +17,6 @@ async function update() {
       label: errorMessage
     });
     log.append(errorMessage);
-    log.show();
   }
 }
 
