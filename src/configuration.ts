@@ -28,7 +28,7 @@ const phabricatorUriFromArc = async () => {
   const response = await arcrc();
   return response.config && response.config["phabricator.uri"]
     ? response.config["phabricator.uri"]
-    : "";
+    : response.default || "";
 };
 
 const phabricatorTokenFromArc = async () => {
@@ -65,5 +65,5 @@ export default {
   apiToken,
   baseUrl,
   diffNotifications,
-  enableTelemetry
+  enableTelemetry,
 };
