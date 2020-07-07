@@ -5,6 +5,7 @@ type Arcrc = {
   config?: {
     "phabricator.uri": string;
   };
+  default?: string;
   hosts?: {
     [host: string]: {
       token: string;

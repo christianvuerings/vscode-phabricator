@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.10] - 2020-07-07
+
+- [bugfix] Fix TypeScript issue
+
 ## [1.0.9] - 2020-07-07
 
 - [bugfix] Fallback to `default` option in Arcanist configuration file
