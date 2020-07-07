@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import cache from "./cache";
 import completionProvider from "./completionProvider";
 import configuration from "./configuration";
-import aranistEditorToVscode from "./aranistEditorToVscode";
+import arcanistEditorToVscode from "./arcanistEditorToVscode";
 import extensionContext from "./context";
 import log from "./log";
 import readyToLandDiffs from "./readyToLandDiffs";
@@ -16,7 +16,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const [apiToken, baseUrl] = await Promise.all([
     configuration.apiToken(),
-    configuration.baseUrl()
+    configuration.baseUrl(),
   ]);
 
   if (!apiToken || !baseUrl) {
@@ -27,7 +27,7 @@ export async function activate(context: vscode.ExtensionContext) {
     track.event({
       category: "Error",
       action: "Error",
-      label: errorMessage
+      label: errorMessage,
     });
     return;
   }
@@ -76,12 +76,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Make VS Code the default editor
   vscode.commands.registerCommand(
-    "phabricator-vscode.setAranistEditorToVscode",
-    aranistEditorToVscode.set
+    "phabricator-vscode.setArcanistEditorToVscode",
+    arcanistEditorToVscode.set
   );
   vscode.commands.registerCommand(
-    "phabricator-vscode.unsetAranistEditorToVscode",
-    aranistEditorToVscode.unset
+    "phabricator-vscode.unsetArcanistEditorToVscode",
+    arcanistEditorToVscode.unset
   );
 
   // Add auto completion provider
@@ -90,7 +90,7 @@ export async function activate(context: vscode.ExtensionContext) {
   track.event({
     category: "Event",
     action: "Activate",
-    label: "Extension"
+    label: "Extension",
   });
 }
 

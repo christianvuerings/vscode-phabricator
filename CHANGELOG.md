@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.8] - 2020-07-07
+
+- [bugfix] Fix misspelled Aranist to Arcanist
+
 ## [1.0.7] - 2020-03-11
 
 - [bugfix] Stops cache error logging from stealing focus (#9)
@@ -16,7 +20,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [1.0.5] - 2020-01-18
 
-- [feature] Add commands to set VS Code as the Aranist editor
+- [feature] Add commands to set VS Code as the Arcanist editor
 
 ## [1.0.4] - 2020-01-16
 

@@ -61,11 +61,11 @@
         "title": "Phabricator: Update cache"
       },
       {
-        "command": "phabricator-vscode.setAranistEditorToVscode",
+        "command": "phabricator-vscode.setArcanistEditorToVscode",
         "title": "Phabricator: Set Arcanist editor to VS Code"
       },
       {
-        "command": "phabricator-vscode.unsetAranistEditorToVscode",
+        "command": "phabricator-vscode.unsetArcanistEditorToVscode",
         "title": "Phabricator: Unset Arcanist editor to VS Code"
       }
     ]
