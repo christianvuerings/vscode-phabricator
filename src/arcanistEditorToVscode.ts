@@ -15,16 +15,16 @@ const set = async () => {
         category: "Event",
         action: "Count",
         label: "SetDefaultEditor",
-        value: String(1)
+        value: String(1),
       });
-      log.append(`setAranistEditorToVscode: ${result.stdout}`);
+      log.append(`setArcanistEditorToVscode: ${result.stdout}`);
       vscode.window.showInformationMessage(
         "[Phabricator] Arcanist default editor set to VS Code."
       );
     }
   } catch (e) {
     console.error(e);
-    log.append(`setAranistEditorToVscode Error: ${e.message}`);
+    log.append(`setArcanistEditorToVscode Error: ${e.message}`);
     log.show();
   }
 };
@@ -37,21 +37,21 @@ const unset = async () => {
         category: "Event",
         action: "Count",
         label: "UnSetDefaultEditor",
-        value: String(1)
+        value: String(1),
       });
-      log.append(`unsetAranistEditorToVscode: ${result.stdout}`);
+      log.append(`unsetArcanistEditorToVscode: ${result.stdout}`);
       vscode.window.showInformationMessage(
         "[Phabricator] Arcanist default editor removed."
       );
     }
   } catch (e) {
     console.error(e);
-    log.append(`unsetAranistEditorToVscode Error: ${e.message}`);
+    log.append(`unsetArcanistEditorToVscode Error: ${e.message}`);
     log.show();
   }
 };
 
 export default {
   set,
-  unset
+  unset,
 };
