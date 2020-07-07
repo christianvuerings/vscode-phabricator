@@ -3,7 +3,7 @@
   "displayName": "Phabricator",
   "description": "Phabricator support in VSCode",
   "publisher": "christianvuerings",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "engines": {
     "vscode": "^1.41.0"
   },
