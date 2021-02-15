@@ -25,6 +25,23 @@ const arcrc: () => Promise<Arcrc> = async () => {
   }
 };
 
+const repositoryCallsign: () => Promise<string | undefined> = async () => {
+  try {
+    const fsPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+    if (!fsPath) {
+      return undefined;
+    }
+    const result = await execa.command(`arc get-config repository.callsign`, {
+      cwd: fsPath
+    });
+    const value = result.stdout?.split('\n').map(line => line.trim()).filter(Boolean).filter(line => line.startsWith('Current Value'))[0]?.replace('Current Value: ', '').replace(/"/g, '');
+    return value === '-' ? undefined : value;
+  } catch (e) {
+    console.error(e);
+    return undefined;
+  }
+};
+
 const phabricatorUriFromArc = async () => {
   const response = await arcrc();
   return response.config && response.config["phabricator.uri"]
@@ -67,4 +84,5 @@ export default {
   baseUrl,
   diffNotifications,
   enableTelemetry,
+  repositoryCallsign,
 };

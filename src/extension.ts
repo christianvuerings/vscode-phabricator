@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import cache from "./cache";
 import completionProvider from "./completionProvider";
 import configuration from "./configuration";
+import diffusion from "./diffusion";
 import arcanistEditorToVscode from "./arcanistEditorToVscode";
 import extensionContext from "./context";
 import log from "./log";
@@ -31,6 +32,15 @@ export async function activate(context: vscode.ExtensionContext) {
     });
     return;
   }
+
+  const repositoryCallsign = await configuration.repositoryCallsign();
+  vscode.commands.executeCommand('setContext', 'inArcanistProject', Boolean(repositoryCallsign));
+
+  // Contribute Explorer menu
+  vscode.commands.registerCommand(
+    "phabricator-vscode.openDiffusionLink",
+    diffusion.openLink
+  );
 
   // Setup status bar
   statusBar.activate();
