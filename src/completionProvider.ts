@@ -65,7 +65,7 @@ const completionProvider = ({ baseUrl }: { baseUrl: string }) =>
           value: String(results.length)
         });
 
-        return results.map(item => {
+        return results.map(({item}) => {
           const completionItem = new vscode.CompletionItem(
             item.key,
             vscode.CompletionItemKind.Text
@@ -73,9 +73,11 @@ const completionProvider = ({ baseUrl }: { baseUrl: string }) =>
 
           const markdown = new vscode.MarkdownString(
             `**[${item.value}](${new URL(
+
               `/${isGroup ? "tag" : "p"}/${item.key}/`,
               baseUrl
             )})**`.concat(
+
               item.detail ? `\n\n${item.detail.replace(/\s\s#/g, " - ")}` : ""
             )
           );

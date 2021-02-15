@@ -4,7 +4,7 @@ import configuration from "./configuration";
 import log from "./log";
 import packageJSON from "./packageJSON";
 import store from "./store";
-import uuid from "uuid/v5";
+import { v5 as uuid} from "uuid";
 
 const GA_TRACKING_ID = "UA-190225-21";
 const uuidNamespace = "f5ea8702-8da7-479d-bea9-f69049e2090b";
