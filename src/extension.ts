@@ -41,6 +41,10 @@ export async function activate(context: vscode.ExtensionContext) {
     "phabricator-vscode.openDiffusionLink",
     diffusion.openLink
   );
+  vscode.commands.registerCommand(
+    "phabricator-vscode.copyDiffusionUrl",
+    diffusion.copyUrl
+  );
 
   // Setup status bar
   statusBar.activate();

@@ -9,8 +9,8 @@ module.exports = {
     sourceType: "module"
   },
   plugins: ["@typescript-eslint"],
+  ignorePatterns: ['.eslintrc.js'],
   rules: {
-    "@typescript-eslint/class-name-casing": "error",
     "@typescript-eslint/member-delimiter-style": [
       "error",
       {
