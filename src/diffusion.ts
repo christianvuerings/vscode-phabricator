@@ -21,7 +21,13 @@ const getUrl = async (filePath: vscode.Uri) => {
 };
 
 const openLink = async (filePath: vscode.Uri) => {
-  const url = await getUrl(filePath);
+  const uri = filePath ?? vscode.window.activeTextEditor?.document.uri;
+
+  if(!uri) {
+    vscode.window.showInformationMessage('Open a file first to open its Diffusion link');
+  }
+
+  const url = await getUrl(uri);
   await open(url);
   track.event({
     category: "Event",
@@ -32,7 +38,13 @@ const openLink = async (filePath: vscode.Uri) => {
 };
 
 const copyUrl = async (filePath: vscode.Uri) => {
-  const url = await getUrl(filePath);
+  const uri = filePath ?? vscode.window.activeTextEditor?.document.uri;
+  const url = await getUrl(uri);
+
+  if(!uri) {
+    vscode.window.showInformationMessage('Open a file first to copy its Diffusion Url');
+  }
+
   await vscode.env.clipboard.writeText(url);
   track.event({
     category: "Event",
