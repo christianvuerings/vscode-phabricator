@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.14] - 2021-02-18
+
+- [feature] Include line range in Diffusion URL
+
 ## [1.0.13] - 2021-02-17
 
 - [feature] Fix diffusion commands in command explorer

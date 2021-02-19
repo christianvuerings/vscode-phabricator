@@ -20,6 +20,16 @@ const getUrl = async (filePath: vscode.Uri) => {
   return url.toString();
 };
 
+const selectionToUrlRange = (selection?: vscode.Selection ) => {
+  if (!selection) {
+    return '';
+  }
+
+  return selection.isSingleLine
+    ? `$${selection.start.line + 1}`
+    : `$${selection.start.line + 1}-${selection.end.line + 1}`;
+};
+
 const openLink = async (filePath: vscode.Uri) => {
   const uri = filePath ?? vscode.window.activeTextEditor?.document.uri;
 
@@ -27,7 +37,9 @@ const openLink = async (filePath: vscode.Uri) => {
     vscode.window.showInformationMessage('Open a file first to open its Diffusion link');
   }
 
-  const url = await getUrl(uri);
+  const appendLineNumber = selectionToUrlRange(vscode.window.activeTextEditor?.selection);
+  const url = `${await getUrl(uri)}${appendLineNumber}`;
+
   await open(url);
   track.event({
     category: "Event",
@@ -39,11 +51,13 @@ const openLink = async (filePath: vscode.Uri) => {
 
 const copyUrl = async (filePath: vscode.Uri) => {
   const uri = filePath ?? vscode.window.activeTextEditor?.document.uri;
-  const url = await getUrl(uri);
 
   if(!uri) {
     vscode.window.showInformationMessage('Open a file first to copy its Diffusion Url');
   }
+
+  const appendLineNumber = selectionToUrlRange(vscode.window.activeTextEditor?.selection);
+  const url = `${await getUrl(uri)}${appendLineNumber}`;
 
   await vscode.env.clipboard.writeText(url);
   track.event({
