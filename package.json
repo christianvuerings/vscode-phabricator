@@ -3,7 +3,7 @@
   "displayName": "Phabricator",
   "description": "Phabricator support in VSCode",
   "publisher": "christianvuerings",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "engines": {
     "vscode": "^1.53.0"
   },
@@ -98,6 +98,18 @@
           "when": "inArcanistProject",
           "command": "phabricator-vscode.copyDiffusionUrl",
           "group": "6_copypath"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "phabricator-vscode.openDiffusionLink",
+          "when": "inArcanistProject && editorTextFocus",
+          "group": "navigation"
+        },
+        {
+          "command": "phabricator-vscode.copyDiffusionUrl",
+          "when": "inArcanistProject && editorTextFocus",
+          "group": "9_cutcopypaste"
         }
       ]
     }
