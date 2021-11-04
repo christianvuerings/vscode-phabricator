@@ -18,6 +18,11 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configurationDefaults": {
+      "[plaintext]": {
+        "workbench.editor.languageDetection": false
+      }
+    },
     "configuration": [
       {
         "title": "Phabricator",
