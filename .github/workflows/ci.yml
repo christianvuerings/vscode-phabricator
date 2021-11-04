@@ -24,6 +24,5 @@ jobs:
         run: |
           npm install
           npm run compile
-          npm run test:dependencycheck
           sudo apt-get install xvfb
           xvfb-run --auto-servernum npm test
