@@ -10,10 +10,25 @@ import readyToLandDiffs from "./readyToLandDiffs";
 import statusBar from "./statusBar";
 import store from "./store";
 import track from "./track";
+import runShellCommand from "./runShellCommand";
 
 export async function activate(context: vscode.ExtensionContext) {
   log.append('Extension "vscode-phabricator" is active');
   extensionContext.set(context);
+
+  vscode.workspace.onDidOpenTextDocument(async (document) => {
+    const tmpDir = (await runShellCommand("echo $TMPDIR")) ?? "/tmp";
+    const { fileName } = document;
+
+    // Set text document language to 'plaintext' if it is a temporary arcanist file
+    if (
+      fileName.startsWith(tmpDir) &&
+      (fileName.endsWith("/new-commit") ||
+        fileName.endsWith("/differential-edit-revision-info"))
+    ) {
+      vscode.languages.setTextDocumentLanguage(document, "plaintext");
+    }
+  });
 
   const [apiToken, baseUrl] = await Promise.all([
     configuration.apiToken(),
@@ -34,7 +49,11 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   const repositoryCallsign = await configuration.repositoryCallsign();
-  vscode.commands.executeCommand('setContext', 'inArcanistProject', Boolean(repositoryCallsign));
+  vscode.commands.executeCommand(
+    "setContext",
+    "inArcanistProject",
+    Boolean(repositoryCallsign)
+  );
 
   // Contribute Explorer menu
   vscode.commands.registerCommand(

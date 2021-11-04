@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.15] - 2021-11-04
+
+- [feature] Set the VSCode document language to 'plaintext' for temporary arcanist files
+
 ## [1.0.14] - 2021-02-18
 
 - [feature] Include line range in Diffusion URL
